@@ -28,6 +28,7 @@ void GameDraw()
 
 int main()
 {
+    //this is proof that josh can make edits to the code and push
     GameInit();
 
     while (!WindowShouldClose())

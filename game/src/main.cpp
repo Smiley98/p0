@@ -22,7 +22,7 @@ void GameDraw()
 {
     BeginDrawing();
     ClearBackground(DARKGRAY);
-    DrawText("Hello World!", 10, 10, 20, RED);
+    DrawText("Hello World! - Animations", 10, 10, 20, RED);
     EndDrawing();
 }
 

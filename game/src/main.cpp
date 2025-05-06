@@ -6,6 +6,8 @@ void GameInit()
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(800, 800, "Game");
     SetTargetFPS(144);
+
+    TraceLog(LOG_INFO, "Connor TODO - Make the map so we have a place to test our game!\n");
 }
 
 void GameCleanup()

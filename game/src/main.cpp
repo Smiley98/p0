@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
+#include "rlgl.h"
 
 struct Assets
 {
@@ -25,10 +26,10 @@ void GameInit()
     gAssets.building = LoadModel("./assets/meshes/bld_td.obj");
 
     Camera tdCamera;
-    tdCamera.position = Vector3UnitY * 10.0f;
+    tdCamera.position = Vector3UnitY * 100.0f;
     tdCamera.target = Vector3Zeros;
     tdCamera.up = Vector3UnitZ * -1.0f;
-    tdCamera.fovy = 60.0f;
+    tdCamera.fovy = 75.0f;
     tdCamera.projection = CAMERA_PERSPECTIVE;
 
     Camera fpCamera;
@@ -73,13 +74,28 @@ void GameDraw()
 {
     BeginDrawing();
     ClearBackground(RAYWHITE);
-
     BeginMode3D(gCameraSystem.isFirstPerson ? gCameraSystem.fpCamera : gCameraSystem.tdCamera);
-    DrawGrid(50, 1.0f);
-    DrawModel(gAssets.building, Vector3UnitX * 10.0f, 1.0f, RED);
-    DrawModel(gAssets.building, Vector3UnitZ * 10.0f, 1.0f, BLUE);
-    EndMode3D();
 
+    rlPushMatrix();
+    rlTranslatef(50.0f, 0.0f, 0.0f);
+    DrawGrid(100, 1.0f);
+    rlPopMatrix();
+
+    rlPushMatrix();
+    rlTranslatef(-50.0f, 0.0f, 0.0f);
+    DrawGrid(100, 1.0f);
+    rlPopMatrix();
+
+    // Original Minty Aftershave has 8x4 buildings, camera max zoom cuts off top of buildings.
+    for (float z = -40.0f; z <= 40.0f; z += 20.0f)
+    {
+        for (float x = -80.0f; x <= 80.0f; x += 20.0f)
+        {
+            DrawModel(gAssets.building, { x, 0.0f, z }, 1.0f, DARKGRAY);
+        }
+    }
+
+    EndMode3D();
     DrawFPS(10, 10);
     EndDrawing();
 }
@@ -97,6 +113,9 @@ int main()
     GameCleanup();
     return 0;
 }
+
+// TODO - Determine world size - either 100x100 or 1000x1000 (original TD building is 91.5 x 91.5 x 438, seems a little large)...
+// Will probably go with something smaller like 100x100 for improved precision, plus I'm re-exporting assets to RHS so might as well change dimensions too!
 
 // Right-handed system:
 // col[0] = right

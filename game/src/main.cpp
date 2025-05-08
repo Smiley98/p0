@@ -12,6 +12,7 @@ struct CameraSystem
     Camera tdCamera;
     Camera fpCamera;
     bool isFirstPerson;
+    bool isEnabled;
 };
 
 Assets gAssets;
@@ -42,6 +43,7 @@ void GameInit()
     gCameraSystem.tdCamera = tdCamera;
     gCameraSystem.fpCamera = fpCamera;
     gCameraSystem.isFirstPerson = false;
+    gCameraSystem.isEnabled = true;
 
     DisableCursor();
 }
@@ -54,16 +56,20 @@ void GameCleanup()
 
 void GameUpdate(float dt)
 {
-    UpdateCamera(
-        gCameraSystem.isFirstPerson ? &gCameraSystem.fpCamera : &gCameraSystem.tdCamera,
-        gCameraSystem.isFirstPerson ? CAMERA_FIRST_PERSON : CAMERA_FREE);
+    if (gCameraSystem.isEnabled)
+    {
+        UpdateCamera(
+            gCameraSystem.isFirstPerson ? &gCameraSystem.fpCamera : &gCameraSystem.tdCamera,
+            gCameraSystem.isFirstPerson ? CAMERA_FIRST_PERSON : CAMERA_FREE);
+    }
 
     if (IsKeyPressed(KEY_V))
     {
-        if (IsCursorHidden())
-            EnableCursor();
-        else
+        gCameraSystem.isEnabled = !gCameraSystem.isEnabled;
+        if (gCameraSystem.isEnabled)
             DisableCursor();
+        else
+            EnableCursor();
     }
 
     if (IsKeyPressed(KEY_C))

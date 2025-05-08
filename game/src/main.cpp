@@ -2,9 +2,24 @@
 #include "raymath.h"
 #include "rlgl.h"
 
-struct Assets
+struct Models
 {
     Model building;
+    Model mech;  
+};
+
+struct MechAnimation
+{
+    ModelAnimation* clips = nullptr;    // Array of animation clips
+    int count = 0;                      // Size of animation clips array
+
+    unsigned int index = 0;     // Index of current animation (ie 0 = idle, 1 = walk, 2 = run etc)
+    unsigned int frame = 0;     // Frame of current animation
+};
+
+struct Shaders
+{
+    Shader skinning;
 };
 
 struct CameraSystem
@@ -15,7 +30,9 @@ struct CameraSystem
     bool isEnabled;
 };
 
-Assets gAssets;
+Models gModels;
+MechAnimation gAnim;
+Shaders gShaders;
 CameraSystem gCameraSystem;
 
 void GameInit()
@@ -24,7 +41,12 @@ void GameInit()
     InitWindow(800, 800, "Game");
     SetTargetFPS(144);
     
-    gAssets.building = LoadModel("./assets/meshes/bld_td.obj");
+    gModels.building = LoadModel("./assets/meshes/bld_td.obj");
+    gModels.mech = LoadModel("./assets/meshes/mech.glb");
+    gAnim.clips = LoadModelAnimations("./assets/meshes/mech.glb", &gAnim.count);
+
+    gShaders.skinning = LoadShader("./assets/shaders/skinning.vs", "./assets/shaders/skinning.fs");
+    gModels.mech.materials[1].shader = gShaders.skinning;
 
     Camera tdCamera;
     tdCamera.position = Vector3UnitY * 100.0f;
@@ -34,8 +56,8 @@ void GameInit()
     tdCamera.projection = CAMERA_PERSPECTIVE;
 
     Camera fpCamera;
-    fpCamera.position = { 0.0f, 2.0f, 0.0f };
-    fpCamera.target = { 0.0f, 2.0f, -1.0f };
+    fpCamera.position = { 0.0f, 2.0f, -25.0f };
+    fpCamera.target = { 0.0f, 5.0f, 0.0f };
     fpCamera.up = Vector3UnitY;
     fpCamera.fovy = 60.0f;
     fpCamera.projection = CAMERA_PERSPECTIVE;
@@ -50,7 +72,7 @@ void GameInit()
 
 void GameCleanup()
 {
-    UnloadModel(gAssets.building);
+    UnloadModel(gModels.building);
     CloseWindow();
 }
 
@@ -74,6 +96,20 @@ void GameUpdate(float dt)
 
     if (IsKeyPressed(KEY_C))
         gCameraSystem.isFirstPerson = !gCameraSystem.isFirstPerson;
+
+    int animIndex = gAnim.index;
+
+    if (IsKeyPressed(KEY_T))
+        ++gAnim.index %= gAnim.count;
+
+    else if (IsKeyPressed(KEY_G))
+        --gAnim.index %= gAnim.count;
+
+    if (animIndex != gAnim.index)
+        TraceLog(LOG_INFO, TextFormat("Playing animation %i - %s\n", gAnim.index, gAnim.clips[gAnim.index].name));
+
+    ModelAnimation anim = gAnim.clips[gAnim.index];
+    UpdateModelAnimationBones(gModels.mech, anim, gAnim.frame++);
 }
 
 void GameDraw()
@@ -97,9 +133,12 @@ void GameDraw()
     {
         for (float x = -80.0f; x <= 80.0f; x += 20.0f)
         {
-            DrawModel(gAssets.building, { x, 0.0f, z }, 1.0f, DARKGRAY);
+            if (x == 0.0f && z == 0.0f) continue; // So I can see that sweet sweet mech animation!
+            DrawModelWires(gModels.building, { x, 0.0f, z }, 1.0f, DARKGRAY);
         }
     }
+
+    DrawModel(gModels.mech, Vector3Zeros, 1.0f, DARKGRAY);
 
     EndMode3D();
     DrawFPS(10, 10);

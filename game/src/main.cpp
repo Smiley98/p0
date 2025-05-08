@@ -103,7 +103,7 @@ void GameUpdate(float dt)
         ++gAnim.index %= gAnim.count;
 
     else if (IsKeyPressed(KEY_G))
-        --gAnim.index %= gAnim.count;
+        gAnim.index = (gAnim.index + gAnim.count - 1) % gAnim.count;
 
     if (animIndex != gAnim.index)
         TraceLog(LOG_INFO, TextFormat("Playing animation %i - %s\n", gAnim.index, gAnim.clips[gAnim.index].name));

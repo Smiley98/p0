@@ -30,10 +30,55 @@ struct CameraSystem
     bool isEnabled;
 };
 
+struct Mech
+{
+    float yaw;
+};
+
 Models gModels;
 MechAnimation gAnim;
 Shaders gShaders;
 CameraSystem gCameraSystem;
+
+Mech gMech;
+
+Camera* GetCamera()
+{
+    Camera* camera = gCameraSystem.isFirstPerson ? &gCameraSystem.fpCamera : &gCameraSystem.tdCamera;
+    return camera;
+}
+
+Vector3 MatrixRight(Matrix m)
+{
+    return { m.m0, m.m1, m.m2 };
+}
+
+Vector3 MatrixUp(Matrix m)
+{
+    return { m.m4, m.m5, m.m6 };
+}
+
+Vector3 MatrixForward(Matrix m)
+{
+    return { m.m8, m.m9, m.m10 };
+}
+
+void DrawAxes(Matrix rotation, float length, float thickness = 1.0f)
+{
+    Vector3 x = MatrixRight(rotation);
+    Vector3 y = MatrixUp(rotation);
+    Vector3 z = MatrixForward(rotation);
+
+    rlSetLineWidth(thickness);
+    rlEnableSmoothLines();
+    BeginMode3D(*GetCamera());
+    DrawLine3D(Vector3Zeros, x * length, RED);
+    DrawLine3D(Vector3Zeros, y * length, GREEN);
+    DrawLine3D(Vector3Zeros, z * length, BLUE);
+    EndMode3D();
+    rlDisableSmoothLines();
+    rlSetLineWidth(1.0f);
+}
 
 void GameInit()
 {
@@ -66,8 +111,9 @@ void GameInit()
     gCameraSystem.fpCamera = fpCamera;
     gCameraSystem.isFirstPerson = false;
     gCameraSystem.isEnabled = true;
-
     DisableCursor();
+
+    gMech.yaw = 0.0f;
 }
 
 void GameCleanup()
@@ -78,11 +124,10 @@ void GameCleanup()
 
 void GameUpdate(float dt)
 {
+    Camera* camera = GetCamera();
     if (gCameraSystem.isEnabled)
     {
-        UpdateCamera(
-            gCameraSystem.isFirstPerson ? &gCameraSystem.fpCamera : &gCameraSystem.tdCamera,
-            gCameraSystem.isFirstPerson ? CAMERA_FIRST_PERSON : CAMERA_FREE);
+        UpdateCamera(camera, gCameraSystem.isFirstPerson ? CAMERA_FIRST_PERSON : CAMERA_FREE);
     }
 
     if (IsKeyPressed(KEY_V))
@@ -114,9 +159,11 @@ void GameUpdate(float dt)
 
 void GameDraw()
 {
+    Camera* camera = GetCamera();
+
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    BeginMode3D(gCameraSystem.isFirstPerson ? gCameraSystem.fpCamera : gCameraSystem.tdCamera);
+    BeginMode3D(*camera);
 
     rlPushMatrix();
     rlTranslatef(50.0f, 0.0f, 0.0f);
@@ -139,8 +186,9 @@ void GameDraw()
     }
 
     DrawModel(gModels.mech, Vector3Zeros, 1.0f, DARKGRAY);
-
     EndMode3D();
+
+    DrawAxes(MatrixRotateZ(gMech.yaw), 25.0f, 10.0f);
     DrawFPS(10, 10);
     EndDrawing();
 }
@@ -168,22 +216,6 @@ int main()
 // col[2] = forward "+z = out of the screen", "-z = into the screen"
 
 // Validate top-down camera axes:
-// 
-// Vector3 MatrixRight(Matrix m)
-//{
-//    return { m.m0, m.m1, m.m2 };
-//}
-//
-//Vector3 MatrixUp(Matrix m)
-//{
-//    return { m.m4, m.m5, m.m6 };
-//}
-//
-//Vector3 MatrixForward(Matrix m)
-//{
-//    return { m.m8, m.m9, m.m10 };
-//}
-// 
 //Matrix view = GetCameraMatrix(gCameraSystem.tdCamera);
 //Matrix camera = MatrixInvert(view);
 //

@@ -48,26 +48,27 @@ Camera* GetCamera()
     return camera;
 }
 
-Vector3 MatrixRight(Matrix m)
+Vector3 MatrixColX(Matrix m)
 {
     return { m.m0, m.m1, m.m2 };
 }
 
-Vector3 MatrixUp(Matrix m)
+Vector3 MatrixColY(Matrix m)
 {
     return { m.m4, m.m5, m.m6 };
 }
 
-Vector3 MatrixForward(Matrix m)
+Vector3 MatrixColZ(Matrix m)
 {
     return { m.m8, m.m9, m.m10 };
 }
 
+// TODO - Switch to XY plane (+Y forward, +Z up) and move mech
 void DrawAxes(Matrix rotation, float length, float thickness = 1.0f)
 {
-    Vector3 x = MatrixRight(rotation);
-    Vector3 y = MatrixUp(rotation);
-    Vector3 z = MatrixForward(rotation);
+    Vector3 x = MatrixColX(rotation);
+    Vector3 y = MatrixColY(rotation);
+    Vector3 z = MatrixColZ(rotation);
 
     rlSetLineWidth(thickness);
     rlEnableSmoothLines();

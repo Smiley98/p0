@@ -34,12 +34,13 @@ void UpdateMech(Mech& mech)
         float moveY = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y));
         moveX = fabsf(moveX) >= 0.25f ? moveX : 0.0f;
         moveY = fabsf(moveY) >= 0.25f ? moveY : 0.0f;
+        moveY *= -1.0f;
 
         Vector3 vel = { moveX, moveY, 0.0f };
         vel = Vector3Normalize(vel) * mech.moveSpeed;
         mech.vel = vel;
 
-        float turn = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X));
+        float turn = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X)) * -1.0f;
         if (fabsf(turn) >= 0.25f)
         {
             float dir = copysignf(1.0f, turn);

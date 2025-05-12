@@ -1,15 +1,19 @@
 #include "Camera.h"
+#include "rcamera.h"
 
 CameraSystem gCameraSystem;
 
 void LoadCamera()
 {
     Camera tdCamera;
-    tdCamera.position = Vector3UnitZ * 100.0f;
+    //tdCamera.position = Vector3UnitZ * 100.0f;
+    //tdCamera.target = Vector3Zeros;
+    tdCamera.position = { 0.0f, -10.0f, 40.0f };
     tdCamera.target = Vector3Zeros;
     tdCamera.up = Vector3UnitY;
     tdCamera.fovy = 75.0f;
     tdCamera.projection = CAMERA_PERSPECTIVE;
+    CameraPitch(&tdCamera, 10.0f * DEG2RAD, false, false, true);
 
     Camera fpCamera;
     fpCamera.position = { 0.0f, 25.0f, 2.0f };
@@ -20,7 +24,7 @@ void LoadCamera()
 
     gCameraSystem.tdCamera = tdCamera;
     gCameraSystem.fpCamera = fpCamera;
-    gCameraSystem.isFirstPerson = false;
+    gCameraSystem.behaviour = CAM_TOP_DOWN;
     gCameraSystem.isEnabled = true;
     DisableCursor();
 }
@@ -49,5 +53,8 @@ void UpdateCamera()
     }
 
     if (IsKeyPressed(KEY_C))
-        gCameraSystem.isFirstPerson = !gCameraSystem.isFirstPerson;
+    {
+        gCameraSystem.behaviour = gCameraSystem.behaviour == CAM_FIRST_PERSON ?
+            CAM_TOP_DOWN : CAM_FIRST_PERSON;
+    }
 }

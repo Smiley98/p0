@@ -5,16 +5,6 @@
 struct Models
 {
     Model building;
-    Model mech;  
-};
-
-struct MechAnimation
-{
-    ModelAnimation* clips = nullptr;    // Array of animation clips
-    int count = 0;                      // Size of animation clips array
-
-    unsigned int index = 0;     // Index of current animation (ie 0 = idle, 1 = walk, 2 = run etc)
-    unsigned int frame = 0;     // Frame of current animation
 };
 
 struct Shaders
@@ -32,15 +22,34 @@ struct CameraSystem
 
 struct Mech
 {
-    float yaw;
+    Vector3 pos;
+    float roll;
+};
+
+struct MechAnimation
+{
+    Model model;
+    ModelAnimation* clips = nullptr;    // Array of animation clips
+    int count = 0;                      // Size of animation clips array
+
+    unsigned int index = 0;     // Index of current animation (ie 0 = idle, 1 = walk, 2 = run etc)
+    unsigned int frame = 0;     // Frame of current animation
+};
+
+struct MechRenderer
+{
+    Material material;
+    Model torso;
+    Model legs;
 };
 
 Models gModels;
-MechAnimation gAnim;
 Shaders gShaders;
 CameraSystem gCameraSystem;
 
 Mech gMech;
+MechAnimation gMechAnimation;
+MechRenderer gMechRenderer;
 
 Camera* GetCamera()
 {
@@ -63,7 +72,6 @@ Vector3 MatrixColZ(Matrix m)
     return { m.m8, m.m9, m.m10 };
 }
 
-// TODO - Switch to XY plane (+Y forward, +Z up) and move mech
 void DrawAxes(Matrix rotation, float length, float thickness = 1.0f)
 {
     Vector3 x = MatrixColX(rotation);
@@ -81,30 +89,66 @@ void DrawAxes(Matrix rotation, float length, float thickness = 1.0f)
     rlSetLineWidth(1.0f);
 }
 
+void DrawMech(Mech mech)
+{
+    Matrix rotation = MatrixRotateZ(mech.roll);
+    Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
+    Matrix world = rotation * translation;
+    DrawMesh(gMechRenderer.legs.meshes[0], gMechRenderer.material, world);
+    DrawMesh(gMechRenderer.torso.meshes[0], gMechRenderer.material, world);
+}
+
+void UpdateMechAnimation(MechAnimation& ma)
+{
+    int index = ma.index;
+
+    if (IsKeyPressed(KEY_T))
+        ++ma.index %= ma.count;
+
+    else if (IsKeyPressed(KEY_G))
+        ma.index = (ma.index + ma.count - 1) % ma.count;
+
+    if (index != ma.index)
+        TraceLog(LOG_INFO, TextFormat("Playing animation %i - %s\n", ma.index, ma.clips[ma.index].name));
+
+    ModelAnimation clip = ma.clips[ma.index];
+    UpdateModelAnimationBones(ma.model, clip, ma.frame++);
+}
+
+void DrawMechAnimation(const MechAnimation& ma, Matrix transform)
+{
+    DrawMesh(ma.model.meshes[0], ma.model.materials[1], transform);
+}
+
 void GameInit()
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(800, 800, "Game");
     SetTargetFPS(144);
     
+    gMechRenderer.material = LoadMaterialDefault();
+    gMechRenderer.material.maps[MATERIAL_MAP_DIFFUSE].color = DARKGRAY;
+    gMechRenderer.torso = LoadModel("./assets/meshes/mech_torso.obj");
+    gMechRenderer.legs = LoadModel("./assets/meshes/mech_legs.obj");
     gModels.building = LoadModel("./assets/meshes/bld_td.obj");
-    gModels.mech = LoadModel("./assets/meshes/mech.glb");
-    gAnim.clips = LoadModelAnimations("./assets/meshes/mech.glb", &gAnim.count);
-
+    
     gShaders.skinning = LoadShader("./assets/shaders/skinning.vs", "./assets/shaders/skinning.fs");
-    gModels.mech.materials[1].shader = gShaders.skinning;
+    gMechAnimation.clips = LoadModelAnimations("./assets/meshes/mech.glb", &gMechAnimation.count);
+    gMechAnimation.model = LoadModel("./assets/meshes/mech.glb");
+    gMechAnimation.model.materials[1].shader = gShaders.skinning;
+    gMechAnimation.model.materials[1].maps[MATERIAL_MAP_DIFFUSE].color = DARKGRAY;
 
     Camera tdCamera;
-    tdCamera.position = Vector3UnitY * 100.0f;
+    tdCamera.position = Vector3UnitZ * 100.0f;
     tdCamera.target = Vector3Zeros;
-    tdCamera.up = Vector3UnitZ * -1.0f;
+    tdCamera.up = Vector3UnitY;
     tdCamera.fovy = 75.0f;
     tdCamera.projection = CAMERA_PERSPECTIVE;
 
     Camera fpCamera;
-    fpCamera.position = { 0.0f, 2.0f, -25.0f };
-    fpCamera.target = { 0.0f, 5.0f, 0.0f };
-    fpCamera.up = Vector3UnitY;
+    fpCamera.position = { 0.0f, 10.0f, 2.0f };
+    fpCamera.target = { 0.0f, 0.0f, 2.0f };
+    fpCamera.up = Vector3UnitZ;
     fpCamera.fovy = 60.0f;
     fpCamera.projection = CAMERA_PERSPECTIVE;
 
@@ -114,7 +158,8 @@ void GameInit()
     gCameraSystem.isEnabled = true;
     DisableCursor();
 
-    gMech.yaw = 0.0f;
+    gMech.pos = Vector3Zeros;
+    gMech.roll = 0.0f;
 }
 
 void GameCleanup()
@@ -128,7 +173,7 @@ void GameUpdate(float dt)
     Camera* camera = GetCamera();
     if (gCameraSystem.isEnabled)
     {
-        UpdateCamera(camera, gCameraSystem.isFirstPerson ? CAMERA_FIRST_PERSON : CAMERA_FREE);
+        UpdateCamera(camera, CAMERA_FREE);// gCameraSystem.isFirstPerson ? CAMERA_FIRST_PERSON : CAMERA_FREE);
     }
 
     if (IsKeyPressed(KEY_V))
@@ -143,19 +188,7 @@ void GameUpdate(float dt)
     if (IsKeyPressed(KEY_C))
         gCameraSystem.isFirstPerson = !gCameraSystem.isFirstPerson;
 
-    int animIndex = gAnim.index;
-
-    if (IsKeyPressed(KEY_T))
-        ++gAnim.index %= gAnim.count;
-
-    else if (IsKeyPressed(KEY_G))
-        gAnim.index = (gAnim.index + gAnim.count - 1) % gAnim.count;
-
-    if (animIndex != gAnim.index)
-        TraceLog(LOG_INFO, TextFormat("Playing animation %i - %s\n", gAnim.index, gAnim.clips[gAnim.index].name));
-
-    ModelAnimation anim = gAnim.clips[gAnim.index];
-    UpdateModelAnimationBones(gModels.mech, anim, gAnim.frame++);
+    UpdateMechAnimation(gMechAnimation);
 }
 
 void GameDraw()
@@ -167,29 +200,33 @@ void GameDraw()
     BeginMode3D(*camera);
 
     rlPushMatrix();
+    rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     rlTranslatef(50.0f, 0.0f, 0.0f);
     DrawGrid(100, 1.0f);
     rlPopMatrix();
 
     rlPushMatrix();
+    rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     rlTranslatef(-50.0f, 0.0f, 0.0f);
     DrawGrid(100, 1.0f);
     rlPopMatrix();
 
     // Original Minty Aftershave has 8x4 buildings, camera max zoom cuts off top of buildings.
-    for (float z = -40.0f; z <= 40.0f; z += 20.0f)
+    for (float y = -40.0f; y <= 40.0f; y += 20.0f)
     {
         for (float x = -80.0f; x <= 80.0f; x += 20.0f)
         {
-            if (x == 0.0f && z == 0.0f) continue; // So I can see that sweet sweet mech animation!
-            DrawModelWires(gModels.building, { x, 0.0f, z }, 1.0f, DARKGRAY);
+            if (x == 0.0f && y == 0.0f) continue; // So I can see that sweet sweet mech animation!
+            DrawModelWires(gModels.building, { x, y, 0.0f }, 1.0f, DARKGRAY);
         }
     }
 
-    DrawModel(gModels.mech, Vector3Zeros, 1.0f, DARKGRAY);
+    //DrawMechAnimation(gMechAnimation, MatrixIdentity());
+    gMech.roll = GetTime() * 100.0f * DEG2RAD;
+    DrawMech(gMech);
     EndMode3D();
-
-    DrawAxes(MatrixRotateZ(gMech.yaw), 25.0f, 10.0f);
+    
+    DrawAxes(MatrixRotateZ(gMech.roll), 25.0f, 10.0f);
     DrawFPS(10, 10);
     EndDrawing();
 }
@@ -223,3 +260,9 @@ int main()
 //Vector3 x = MatrixRight(camera);    //  1,  0,  0
 //Vector3 y = MatrixUp(camera);       //  0,  0, -1
 //Vector3 z = MatrixForward(camera);  //  0,  1,  0
+
+// CAMERA_FIRST_PERSON only works if ground plane is XZ
+//CameraMode GetCameraMode()
+//{
+//    return gCameraSystem.isFirstPerson ? CAMERA_FIRST_PERSON : CAMERA_FREE;
+//}

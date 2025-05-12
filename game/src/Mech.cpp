@@ -8,7 +8,13 @@ void LoadMech()
     gMech.legs = LoadModel("./assets/meshes/mech_legs.obj");
 
     gMech.pos = Vector3Zeros;
-    gMech.roll = 0.0f;
+    gMech.vel = Vector3Zeros;
+
+    gMech.rollTorso = 0.0f;
+    gMech.rollLegs = 0.0f;
+
+    gMech.moveSpeed = 10.0f;
+    gMech.turnSpeed = 100.0f * DEG2RAD;
 }
 
 void UnloadMech()
@@ -20,15 +26,38 @@ void UnloadMech()
 
 void UpdateMech(Mech& mech)
 {
-    mech.roll = GetTime() * 100.0f * DEG2RAD;
+    float dt = GetFrameTime();
+
+    if (IsGamepadAvailable(0))
+    {
+        float moveX = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X));
+        float moveY = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y));
+        moveX = fabsf(moveX) >= 0.25f ? moveX : 0.0f;
+        moveY = fabsf(moveY) >= 0.25f ? moveY : 0.0f;
+
+        Vector3 vel = { moveX, moveY, 0.0f };
+        vel = Vector3Normalize(vel) * mech.moveSpeed;
+        mech.vel = vel;
+
+        float turn = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X));
+        if (fabsf(turn) >= 0.25f)
+        {
+            float dir = copysignf(1.0f, turn);
+            mech.rollTorso += mech.turnSpeed * dir * dt;
+        }
+    }
+
+    mech.pos += mech.vel * dt;
 }
 
 void DrawMech(const Mech& mech)
 {
-    Matrix rotation = MatrixRotateZ(mech.roll);
+    Matrix rotationTorso = MatrixRotateZ(mech.rollTorso);
+    Matrix rotationLegs = MatrixRotateZ(mech.rollLegs);
     Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
-    Matrix world = rotation * translation;
+    Matrix worldTorso = rotationTorso * translation;
+    Matrix worldLegs = rotationLegs * translation;
 
-    DrawMesh(mech.legs.meshes[0], mech.material, world);
-    DrawMesh(mech.torso.meshes[0], mech.material, world);
+    DrawMesh(mech.legs.meshes[0], mech.material, worldLegs);
+    DrawMesh(mech.torso.meshes[0], mech.material, worldTorso);
 }

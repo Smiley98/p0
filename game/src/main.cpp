@@ -59,7 +59,7 @@ void GameDraw()
     DrawMech(gMech);
     EndMode3D();
     
-    DrawAxes(MatrixRotateZ(gMech.roll), 25.0f, 10.0f);
+    DrawAxes(MatrixRotateZ(gMech.rollLegs), 25.0f, 10.0f);
     DrawFPS(10, 10);
     EndDrawing();
 }

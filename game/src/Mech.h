@@ -9,7 +9,13 @@ struct Mech
     Model legs;
 
     Vector3 pos;
-    float roll;
+    Vector3 vel;
+
+    float rollTorso;
+    float rollLegs;
+
+    float turnSpeed;
+    float moveSpeed;
 };
 
 extern Mech gMech;

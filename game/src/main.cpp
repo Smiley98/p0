@@ -2,15 +2,14 @@
 #include "raymath.h"
 #include "rlgl.h"
 
-struct Models
-{
-    Model building;
-};
+#include "Shaders.h"
 
-struct Shaders
-{
-    Shader skinning;
-};
+#include "Mech.h"
+#include "MechAnimation.h"
+#include "Buildings.h"
+
+Mech gMech;
+MechAnimation gMechAnimation;
 
 struct CameraSystem
 {
@@ -20,36 +19,7 @@ struct CameraSystem
     bool isEnabled;
 };
 
-struct Mech
-{
-    Vector3 pos;
-    float roll;
-};
-
-struct MechAnimation
-{
-    Model model;
-    ModelAnimation* clips = nullptr;    // Array of animation clips
-    int count = 0;                      // Size of animation clips array
-
-    unsigned int index = 0;     // Index of current animation (ie 0 = idle, 1 = walk, 2 = run etc)
-    unsigned int frame = 0;     // Frame of current animation
-};
-
-struct MechRenderer
-{
-    Material material;
-    Model torso;
-    Model legs;
-};
-
-Models gModels;
-Shaders gShaders;
 CameraSystem gCameraSystem;
-
-Mech gMech;
-MechAnimation gMechAnimation;
-MechRenderer gMechRenderer;
 
 Camera* GetCamera()
 {
@@ -89,54 +59,17 @@ void DrawAxes(Matrix rotation, float length, float thickness = 1.0f)
     rlSetLineWidth(1.0f);
 }
 
-void DrawMech(Mech mech)
-{
-    Matrix rotation = MatrixRotateZ(mech.roll);
-    Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
-    Matrix world = rotation * translation;
-    DrawMesh(gMechRenderer.legs.meshes[0], gMechRenderer.material, world);
-    DrawMesh(gMechRenderer.torso.meshes[0], gMechRenderer.material, world);
-}
-
-void UpdateMechAnimation(MechAnimation& ma)
-{
-    int index = ma.index;
-
-    if (IsKeyPressed(KEY_T))
-        ++ma.index %= ma.count;
-
-    else if (IsKeyPressed(KEY_G))
-        ma.index = (ma.index + ma.count - 1) % ma.count;
-
-    if (index != ma.index)
-        TraceLog(LOG_INFO, TextFormat("Playing animation %i - %s\n", ma.index, ma.clips[ma.index].name));
-
-    ModelAnimation clip = ma.clips[ma.index];
-    UpdateModelAnimationBones(ma.model, clip, ma.frame++);
-}
-
-void DrawMechAnimation(const MechAnimation& ma, Matrix transform)
-{
-    DrawMesh(ma.model.meshes[0], ma.model.materials[1], transform);
-}
-
 void GameInit()
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(800, 800, "Game");
     SetTargetFPS(144);
     
-    gMechRenderer.material = LoadMaterialDefault();
-    gMechRenderer.material.maps[MATERIAL_MAP_DIFFUSE].color = DARKGRAY;
-    gMechRenderer.torso = LoadModel("./assets/meshes/mech_torso.obj");
-    gMechRenderer.legs = LoadModel("./assets/meshes/mech_legs.obj");
-    gModels.building = LoadModel("./assets/meshes/bld_td.obj");
-    
-    gShaders.skinning = LoadShader("./assets/shaders/skinning.vs", "./assets/shaders/skinning.fs");
-    gMechAnimation.clips = LoadModelAnimations("./assets/meshes/mech.glb", &gMechAnimation.count);
-    gMechAnimation.model = LoadModel("./assets/meshes/mech.glb");
-    gMechAnimation.model.materials[1].shader = gShaders.skinning;
-    gMechAnimation.model.materials[1].maps[MATERIAL_MAP_DIFFUSE].color = DARKGRAY;
+    LoadShaders();
+    LoadBuildings();
+
+    LoadMech();
+    LoadMechAnimation();
 
     Camera tdCamera;
     tdCamera.position = Vector3UnitZ * 100.0f;
@@ -164,7 +97,12 @@ void GameInit()
 
 void GameCleanup()
 {
-    UnloadModel(gModels.building);
+    UnloadMechAnimation();
+    UnloadMech();
+
+    UnloadBuildings();
+    UnloadShaders();
+
     CloseWindow();
 }
 
@@ -199,28 +137,7 @@ void GameDraw()
     ClearBackground(RAYWHITE);
     BeginMode3D(*camera);
 
-    rlPushMatrix();
-    rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-    rlTranslatef(50.0f, 0.0f, 0.0f);
-    DrawGrid(100, 1.0f);
-    rlPopMatrix();
-
-    rlPushMatrix();
-    rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-    rlTranslatef(-50.0f, 0.0f, 0.0f);
-    DrawGrid(100, 1.0f);
-    rlPopMatrix();
-
-    // Original Minty Aftershave has 8x4 buildings, camera max zoom cuts off top of buildings.
-    for (float y = -40.0f; y <= 40.0f; y += 20.0f)
-    {
-        for (float x = -80.0f; x <= 80.0f; x += 20.0f)
-        {
-            if (x == 0.0f && y == 0.0f) continue; // So I can see that sweet sweet mech animation!
-            DrawModelWires(gModels.building, { x, y, 0.0f }, 1.0f, DARKGRAY);
-        }
-    }
-
+    DrawBuildings();
     //DrawMechAnimation(gMechAnimation, MatrixIdentity());
     gMech.roll = GetTime() * 100.0f * DEG2RAD;
     DrawMech(gMech);

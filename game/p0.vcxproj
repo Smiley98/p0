@@ -113,7 +113,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Buildings.cpp" />
+    <ClCompile Include="src\MechAnimation.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Mech.cpp" />
+    <ClCompile Include="src\Shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico" />
@@ -125,6 +129,12 @@
     <ProjectReference Include="..\raylib-5.5\raylib.vcxproj">
       <Project>{8898EA18-743A-15EF-5DF5-284349369C3F}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Buildings.h" />
+    <ClInclude Include="src\MechAnimation.h" />
+    <ClInclude Include="src\Mech.h" />
+    <ClInclude Include="src\Shaders.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

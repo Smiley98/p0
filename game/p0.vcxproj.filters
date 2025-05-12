@@ -19,6 +19,12 @@
     <Filter Include="Buildings">
       <UniqueIdentifier>{2f3770ee-70cf-4ff9-a47c-8bb1e2d8fdc7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{f67acc43-d257-4aac-940c-5c50c01b2bd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{67fdaeda-b048-467f-82a1-91ab894ff066}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -35,6 +41,12 @@
     </ClCompile>
     <ClCompile Include="src\Buildings.cpp">
       <Filter>Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugDraw.cpp">
+      <Filter>Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +71,15 @@
     </ClInclude>
     <ClInclude Include="src\Buildings.h">
       <Filter>Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\raymathext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugDraw.h">
+      <Filter>Debug</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

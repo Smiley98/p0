@@ -25,14 +25,15 @@ void GameInit()
 
 	//I want ui to set this up and then save it to a file or something
 	//so in game you can just load the file and it will set up the emitter and whatever
-    emitter.position = { 0.0f, -1.0f, -9.0f };
-    emitter.shape = ParticleEmitter::Shape::CONE;
+    emitter.position = { 0.0f, -1.0f, -2.0f };
+    emitter.shape = ParticleEmitter::Shape::SPHERE;
     emitter.spawnRate = 20.0f;
     emitter.particleSpeed = 1.5f;
     emitter.direction = { 0.5f, 1.0f, 0.0f };
     emitter.particleSize = 0.3f;
     emitter.lifetime = 3.0f;
-	emitter.coneAngle = 45;
+	emitter.radius = 4;
+	//emitter.coneAngle = 45;
 	emitter.startColor = { 255, 255, 255, 255 };
     
 

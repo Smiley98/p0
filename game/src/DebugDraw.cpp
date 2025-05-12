@@ -3,7 +3,7 @@
 #include "glad.h"
 #include "Camera.h"
 
-void DrawAxes(Matrix rotation, float length, float thickness)
+void DrawAxes(Vector3 position, Matrix rotation, float length, float thickness)
 {
     Vector3 x = MatrixColX(rotation);
     Vector3 y = MatrixColY(rotation);
@@ -13,9 +13,9 @@ void DrawAxes(Matrix rotation, float length, float thickness)
     rlSetLineWidth(thickness);
     rlEnableSmoothLines();
     BeginMode3D(*GetCamera());
-    DrawLine3D(Vector3Zeros, x * length, RED);
-    DrawLine3D(Vector3Zeros, y * length, GREEN);
-    DrawLine3D(Vector3Zeros, z * length, BLUE);
+    DrawLine3D(position, position + x * length, RED);
+    DrawLine3D(position, position + y * length, GREEN);
+    DrawLine3D(position, position + z * length, BLUE);
     EndMode3D();
     rlDisableSmoothLines();
     rlSetLineWidth(1.0f);

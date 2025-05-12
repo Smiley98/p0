@@ -1,4 +1,5 @@
 #include "Mech.h"
+#include "DebugDraw.h"
 
 void LoadMech()
 {
@@ -61,4 +62,9 @@ void DrawMech(const Mech& mech)
 
     DrawMesh(mech.legs.meshes[0], mech.material, worldLegs);
     DrawMesh(mech.torso.meshes[0], mech.material, worldTorso);
+}
+
+void DrawMechDebug(const Mech& mech)
+{
+    DrawAxes(mech.pos, MatrixRotateZ(mech.rollTorso), 25.0f, 10.0f);
 }

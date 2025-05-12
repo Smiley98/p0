@@ -25,3 +25,4 @@ void UnloadMech();
 
 void UpdateMech(Mech& mech);
 void DrawMech(const Mech& mech);
+void DrawMechDebug(const Mech& mech);

@@ -2,4 +2,4 @@
 #include "raylib.h"
 #include "raymathext.h"
 
-void DrawAxes(Matrix rotation, float length, float thickness = 1.0f);
+void DrawAxes(Vector3 position, Matrix rotation, float length, float thickness = 1.0f);

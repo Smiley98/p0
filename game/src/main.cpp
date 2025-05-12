@@ -50,18 +50,16 @@ void GameUpdate(float dt)
 
 void GameDraw()
 {
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
     BeginMode3D(*GetCamera());
-
-    DrawBuildings();
-    //DrawMechAnimation(gMechAnimation, MatrixIdentity());
-    DrawMech(gMech);
+        DrawBuildings();
+        //DrawMechAnimation(gMechAnimation, MatrixIdentity());
+        DrawMech(gMech);
     EndMode3D();
-    
-    DrawAxes(MatrixRotateZ(gMech.rollLegs), 25.0f, 10.0f);
-    DrawFPS(10, 10);
-    EndDrawing();
+}
+
+void GameDrawDebug()
+{
+    DrawMechDebug(gMech);
 }
 
 int main()
@@ -71,7 +69,13 @@ int main()
     while (!WindowShouldClose())
     {
         GameUpdate(GetFrameTime());
-        GameDraw();
+
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+            GameDraw();
+            GameDrawDebug();
+            DrawFPS(10, 10);
+        EndDrawing();
     }
 
     GameUnload();

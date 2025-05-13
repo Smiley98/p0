@@ -7,7 +7,6 @@ struct Models
     Model building;
     Model mech;  
 };
-
 struct MechAnimation
 {
     ModelAnimation* clips = nullptr;    // Array of animation clips
@@ -15,13 +14,13 @@ struct MechAnimation
 
     unsigned int index = 0;     // Index of current animation (ie 0 = idle, 1 = walk, 2 = run etc)
     unsigned int frame = 0;     // Frame of current animation
-};
 
+    float animSpeed = 1.0f;     //speed of animation default 1
+};
 struct Shaders
 {
     Shader skinning;
 };
-
 struct CameraSystem
 {
     Camera tdCamera;
@@ -105,11 +104,18 @@ void GameUpdate(float dt)
     else if (IsKeyPressed(KEY_G))
         gAnim.index = (gAnim.index + gAnim.count - 1) % gAnim.count;
 
+    //testing Changing animation speed
+    if (IsKeyPressed(KEY_P)) {
+        static int i = 0;
+        static const float speeds[3] = { 1.0f, 0.5f, 2.0f };
+        gAnim.animSpeed = speeds[(++i) % 3];
+    }       
+        
     if (animIndex != gAnim.index)
         TraceLog(LOG_INFO, TextFormat("Playing animation %i - %s\n", gAnim.index, gAnim.clips[gAnim.index].name));
 
     ModelAnimation anim = gAnim.clips[gAnim.index];
-    UpdateModelAnimationBones(gModels.mech, anim, gAnim.frame++);
+    UpdateModelAnimationBones(gModels.mech, anim, gAnim.frame++ * gAnim.animSpeed);
 }
 
 void GameDraw()

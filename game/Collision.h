@@ -93,7 +93,7 @@ RMAPI bool RectanglePlane(
     Vector2 plane, Vector2 normal,
     Vector2* mtv = nullptr)
 {
-    Vector2 near = Vector2Clamp(rect - normal * LengthSqr(extents), rect - extents, rect + extents);
+    Vector2 near = Vector2Clamp(rect - normal * Vector2LengthSqr(extents), rect - extents, rect + extents);
     return CirclePlane(near, 1.0f, plane, normal, mtv);
 }
 

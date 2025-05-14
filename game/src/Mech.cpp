@@ -1,6 +1,8 @@
 #include "Mech.h"
 #include "DebugDraw.h"
 
+static Color fColor = RED;
+
 void LoadMech()
 {
     gMech.material = LoadMaterialDefault();
@@ -16,6 +18,8 @@ void LoadMech()
 
     gMech.moveSpeed = 10.0f;
     gMech.turnSpeed = 100.0f * DEG2RAD;
+
+    gMech.drag = 0.05f;
 }
 
 void UnloadMech()
@@ -31,29 +35,37 @@ void UpdateMech(Mech& mech)
 
     if (IsGamepadAvailable(0))
     {
+        const float t = 0.5f; // My Xbox controller has HUGE deadzones xD
         float moveX = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X));
         float moveY = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y));
-        moveX = fabsf(moveX) >= 0.25f ? moveX : 0.0f;
-        moveY = fabsf(moveY) >= 0.25f ? moveY : 0.0f;
+        moveX = fabsf(moveX) >= t ? moveX : 0.0f;
+        moveY = fabsf(moveY) >= t ? moveY : 0.0f;
         moveY *= -1.0f;
 
-        // TODO - add legs rotation deadzone, and persistant direction if no movement
-        Vector2 dir = { moveX, moveY };
-        dir = Vector2Normalize(dir);
-        mech.rollLegs = Vector2Angle(Vector2UnitY, dir);
+        // TODO - Make rotation gradual instead of instantaneous
+        if (Vector2Length({ moveX, moveY }) >= t)
+        {
+            Vector2 dir = Vector2Normalize({ moveX, moveY });
+            mech.rollLegs = Vector2Angle(Vector2UnitY, dir);
 
-        mech.vel.x = dir.x;
-        mech.vel.y = dir.y;
-        mech.vel *= mech.moveSpeed;
+            Vector2 vel = dir * mech.moveSpeed;
+            mech.vel.x = vel.x;
+            mech.vel.y = vel.y;
+            
+            fColor = RED;
+        }
+        else
+            fColor = GREEN;
 
         float turn = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X)) * -1.0f;
-        if (fabsf(turn) >= 0.25f)
+        if (fabsf(turn) >= t)
         {
             float dir = copysignf(1.0f, turn);
             mech.rollTorso += mech.turnSpeed * dir * dt;
         }
     }
 
+    mech.vel *= powf(mech.drag, dt);
     mech.pos += mech.vel * dt;
 }
 
@@ -67,6 +79,7 @@ void DrawMech(const Mech& mech)
     Matrix worldTorso = rotationTorso * translation;
     Matrix worldLegs = rotationLegs * translation;
 
+    mech.material.maps[MATERIAL_MAP_DIFFUSE].color = fColor;
     DrawMesh(mech.torso.meshes[0], mech.material, worldTorso);
     DrawMesh(mech.legs.meshes[0], mech.material, worldLegs);
 

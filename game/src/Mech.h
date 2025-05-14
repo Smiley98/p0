@@ -16,6 +16,8 @@ struct Mech
 
     float turnSpeed;
     float moveSpeed;
+
+    float drag; // 0.0 = full drag, 1.0 = no drag
 };
 
 extern Mech gMech;

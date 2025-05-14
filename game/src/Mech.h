@@ -14,7 +14,8 @@ struct Mech
     float turnSpeed;
     float moveSpeed;
 
-    float drag; // 0.0 = full drag, 1.0 = no drag
+    // 0.0 = full drag, 1.0 = no drag
+    float drag;
 
     Vector2 currDirMove;
     Vector2 currDirAim;

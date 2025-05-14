@@ -47,22 +47,15 @@ void UpdateMech(Mech& mech)
         moveY *= -1.0f;
         aimY *= -1.0f;
 
-        // TODO - Make rotation gradual instead of instantaneous
-        //if (Vector2Length({ moveX, moveY }) >= deadzone)
-        //{
-        //    mech.goalDirMove = Vector2Normalize({ moveX, moveY });
-        //    mech.currDirMove = Vector2RotateTowards(mech.currDirMove, mech.goalDirMove, 10.0f * DEG2RAD * dt);
-        //
-        //    //TraceLog(LOG_INFO, TextFormat("Angle: %f\n", mech.rollLegs * RAD2DEG));
-        //
-        //    Vector2 vel = dir * mech.moveSpeed;
-        //    mech.vel.x = vel.x;
-        //    mech.vel.y = vel.y;
-        //    
-        //    fColor = RED;
-        //}
-        //else
-        //    fColor = GREEN;
+        if (Vector2Length({ moveX, moveY }) >= deadzone)
+        {
+            mech.goalDirMove = Vector2Normalize({ moveX, moveY });
+        
+            // curr vs goal is just for smooth visuals. Motion is based directly on gamepad input (goal dir)
+            Vector2 vel = mech.goalDirMove * mech.moveSpeed;
+            mech.vel.x = vel.x;
+            mech.vel.y = vel.y;
+        }
 
         if (Vector2Length({ aimX, aimY }) >= deadzone)
         {
@@ -72,6 +65,7 @@ void UpdateMech(Mech& mech)
         }
     }
 
+    mech.currDirMove = Vector2RotateTowards(mech.currDirMove, mech.goalDirMove, 250.0f * DEG2RAD * dt);
     mech.vel *= powf(mech.drag, dt);
     mech.pos += mech.vel * dt;
 }

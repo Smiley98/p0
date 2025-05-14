@@ -13,8 +13,8 @@ void LoadMech()
     gMech.pos = Vector3Zeros;
     gMech.vel = Vector3Zeros;
 
-    gMech.rollTorso = 0.0f;
-    gMech.rollLegs = 0.0f;
+    gMech.currDirMove = gMech.goalDirMove = Vector2UnitY;
+    gMech.currDirAim = gMech.goalDirAim = Vector2UnitY;
 
     gMech.moveSpeed = 10.0f;
     gMech.turnSpeed = 100.0f * DEG2RAD;
@@ -35,33 +35,40 @@ void UpdateMech(Mech& mech)
 
     if (IsGamepadAvailable(0))
     {
-        const float t = 0.5f; // My Xbox controller has HUGE deadzones xD
+        const float deadzone = 0.5f;
         float moveX = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X));
         float moveY = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y));
-        moveX = fabsf(moveX) >= t ? moveX : 0.0f;
-        moveY = fabsf(moveY) >= t ? moveY : 0.0f;
+        float aimX = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X));
+        float aimY = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y));
+        moveX = fabsf(moveX) >= deadzone ? moveX : 0.0f;
+        moveY = fabsf(moveY) >= deadzone ? moveY : 0.0f;
+        aimX = fabsf(aimX) >= deadzone ? aimX : 0.0f;
+        aimY = fabsf(aimY) >= deadzone ? aimY : 0.0f;
         moveY *= -1.0f;
+        aimY *= -1.0f;
 
         // TODO - Make rotation gradual instead of instantaneous
-        if (Vector2Length({ moveX, moveY }) >= t)
-        {
-            Vector2 dir = Vector2Normalize({ moveX, moveY });
-            mech.rollLegs = Vector2Angle(Vector2UnitY, dir);
+        //if (Vector2Length({ moveX, moveY }) >= deadzone)
+        //{
+        //    mech.goalDirMove = Vector2Normalize({ moveX, moveY });
+        //    mech.currDirMove = Vector2RotateTowards(mech.currDirMove, mech.goalDirMove, 10.0f * DEG2RAD * dt);
+        //
+        //    //TraceLog(LOG_INFO, TextFormat("Angle: %f\n", mech.rollLegs * RAD2DEG));
+        //
+        //    Vector2 vel = dir * mech.moveSpeed;
+        //    mech.vel.x = vel.x;
+        //    mech.vel.y = vel.y;
+        //    
+        //    fColor = RED;
+        //}
+        //else
+        //    fColor = GREEN;
 
-            Vector2 vel = dir * mech.moveSpeed;
-            mech.vel.x = vel.x;
-            mech.vel.y = vel.y;
-            
-            fColor = RED;
-        }
-        else
-            fColor = GREEN;
-
-        float turn = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X)) * -1.0f;
-        if (fabsf(turn) >= t)
+        if (Vector2Length({ aimX, aimY }) >= deadzone)
         {
-            float dir = copysignf(1.0f, turn);
-            mech.rollTorso += mech.turnSpeed * dir * dt;
+            Vector2 aim = Vector2Normalize({ aimX, aimY });
+            mech.goalDirAim = aim;
+            mech.currDirAim = Vector2RotateTowards(mech.currDirAim, mech.goalDirAim, mech.turnSpeed * dt);
         }
     }
 
@@ -71,10 +78,11 @@ void UpdateMech(Mech& mech)
 
 void DrawMech(const Mech& mech)
 {
+    // RHS positive rotation is CCW
     Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
 
-    Matrix rotationTorso = MatrixRotateZ(mech.rollTorso);
-    Matrix rotationLegs = MatrixRotateZ(mech.rollLegs);
+    Matrix rotationTorso = MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.currDirAim));
+    Matrix rotationLegs = MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.currDirMove));
 
     Matrix worldTorso = rotationTorso * translation;
     Matrix worldLegs = rotationLegs * translation;
@@ -82,11 +90,10 @@ void DrawMech(const Mech& mech)
     mech.material.maps[MATERIAL_MAP_DIFFUSE].color = fColor;
     DrawMesh(mech.torso.meshes[0], mech.material, worldTorso);
     DrawMesh(mech.legs.meshes[0], mech.material, worldLegs);
-
-    //Vector2Angle(v1, v2) where v1 is basis ie right or up, and v2 is direction
 }
 
 void DrawMechDebug(const Mech& mech)
 {
-    DrawAxes(mech.pos, MatrixRotateZ(mech.rollTorso), 25.0f, 10.0f);
+    float aimAngle = Vector2Angle(Vector2UnitY, mech.currDirAim);
+    DrawAxes(mech.pos, MatrixRotateZ(aimAngle), 25.0f, 10.0f);
 }

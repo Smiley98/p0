@@ -1,7 +1,7 @@
 #include "Mech.h"
 #include "DebugDraw.h"
 
-static Color fColor = RED;
+static Color fColor = DARKGRAY;
 
 void LoadMech()
 {
@@ -20,6 +20,14 @@ void LoadMech()
     gMech.turnSpeed = 100.0f * DEG2RAD;
 
     gMech.drag = 0.05f;
+
+    // TODO - Make QuaternionRotateTowards, then test by firing a grenade (and rotating it in its direction of motion)!
+    //Vector3 x = Vector3UnitX;
+    //Vector3 y = Vector3UnitY;
+    //Quaternion q = QuaternionFromVector3ToVector3(x, y);
+    //Vector3 axis;
+    //float angle;
+    //QuaternionToAxisAngle(q, &axis, &angle);
 }
 
 void UnloadMech()
@@ -88,10 +96,12 @@ void DrawMech(const Mech& mech)
 
 void DrawMechDebug(const Mech& mech)
 {
-    // TODO - Render curr & goal for move & aim
-    float aimAngle = Vector2Angle(Vector2UnitY, mech.currDirAim);
-    DrawAxesDebug(mech.pos, MatrixRotateZ(aimAngle), 25.0f, 10.0f);
-    //DrawText("Test", 10, 10, 20, RED); <-- doesn't draw since currently in 3D mode
+    //float aimAngle = Vector2Angle(Vector2UnitY, mech.currDirAim);
+    //DrawAxesDebug(mech.pos, MatrixRotateZ(aimAngle), 25.0f, 10.0f);
+
+    // Must respect RHS coordinates (since using "up" as local_z, must supply vectors accordingly)!
+    Vector3 aim = { mech.currDirAim.x, mech.currDirAim.y, 0.0f };
+    DrawAxesDebug(mech.pos, MatrixLookRotation(Vector3UnitZ, aim), 25.0f, 10.0f);
 }
 
 // If I want to pair text with lines, I'll need to make something like
@@ -99,3 +109,11 @@ void DrawMechDebug(const Mech& mech)
 
 // Still, DrawMesh recomputes mvp, and resends m, v, p (and mvp). Begin/End aren't very expensive.
 // Overall more correct to do debug-related updates within update.
+
+// Original grenade implementation lerps its direction towards its velocity (all physics, no quadratic formula)
+// Original did so by using Frenet-frame to orientate in direction of motion ie rotation = Frenet(Lerp(dir, vel, 0.01))
+// I'll most likely need something similar if I'm trying to point an object in its direction of motion
+// (motion is a direction, not a rotation, so I can't use QuaternionRotateTowards).
+
+// Launch solution should be as simple as local-up = Cross(projectile_forward, mech_right)
+// where projectile_forward = mech_forward * launch_elevation

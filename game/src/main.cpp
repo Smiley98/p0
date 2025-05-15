@@ -19,6 +19,8 @@ void GameLoad()
     InitWindow(800, 800, "Game");
     SetTargetFPS(144);
     
+    Vector3 z = Vector3CrossProduct(Vector3UnitX, Vector3UnitY);
+
     LoadShaders();
     LoadBuildings();
 

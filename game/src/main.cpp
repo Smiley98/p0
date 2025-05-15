@@ -83,3 +83,7 @@ int main()
 }
 
 // TODO - Decide on skeletal animation vs morph target animation
+// TODO - Decide whether to wrap individual draw calls in BeginMode3D/EndMode3D vs
+//        separate 2D vs 3D rendering entirely
+// Probably the latter because we should be thinking in systems rather than objects.
+// Mechs + Buildings + Particles in 3D. UI in 2D.

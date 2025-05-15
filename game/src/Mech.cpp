@@ -88,6 +88,14 @@ void DrawMech(const Mech& mech)
 
 void DrawMechDebug(const Mech& mech)
 {
+    // TODO - Render curr & goal for move & aim
     float aimAngle = Vector2Angle(Vector2UnitY, mech.currDirAim);
     DrawAxesDebug(mech.pos, MatrixRotateZ(aimAngle), 25.0f, 10.0f);
+    //DrawText("Test", 10, 10, 20, RED); <-- doesn't draw since currently in 3D mode
 }
+
+// If I want to pair text with lines, I'll need to make something like
+// struct MechDebug and update moveAngleDiff and aimAngleDiff there, then separate rendering between 2D vs 3D
+
+// Still, DrawMesh recomputes mvp, and resends m, v, p (and mvp). Begin/End aren't very expensive.
+// Overall more correct to do debug-related updates within update.

@@ -89,5 +89,5 @@ void DrawMech(const Mech& mech)
 void DrawMechDebug(const Mech& mech)
 {
     float aimAngle = Vector2Angle(Vector2UnitY, mech.currDirAim);
-    DrawAxes(mech.pos, MatrixRotateZ(aimAngle), 25.0f, 10.0f);
+    DrawAxesDebug(mech.pos, MatrixRotateZ(aimAngle), 25.0f, 10.0f);
 }

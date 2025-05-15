@@ -48,18 +48,19 @@ void GameUpdate(float dt)
     UpdateMechAnimation(gMechAnimation);
 }
 
-void GameDraw()
+void GameDraw3D()
 {
     BeginMode3D(*GetCamera());
         DrawBuildings();
         //DrawMechAnimation(gMechAnimation, MatrixIdentity());
         DrawMech(gMech);
+        DrawMechDebug(gMech);
     EndMode3D();
 }
 
-void GameDrawDebug()
+void GameDraw2D()
 {
-    DrawMechDebug(gMech);
+    DrawFPS(10, 10);
 }
 
 int main()
@@ -72,9 +73,8 @@ int main()
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
-            GameDraw();
-            GameDrawDebug();
-            DrawFPS(10, 10);
+        GameDraw3D();
+        GameDraw2D();
         EndDrawing();
     }
 

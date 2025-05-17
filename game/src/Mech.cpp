@@ -108,4 +108,8 @@ void DrawMechDebug(const Mech& mech)
 {
     Vector3 aim = p0Vector3Direction(mech.aimAngle);
     DrawAxesDebug(mech.pos, p0MatrixLookRotation(aim), 25.0f, 10.0f);
+
+    Quaternion z = QuaternionFromEuler(0.0f, 0.0f, mech.aimAngle);
+    Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, z);
+    DrawLineDebug(mech.pos, mech.pos + dir * 25.0f, DARKGREEN, 3.0f);
 }

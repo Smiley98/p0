@@ -13,6 +13,11 @@ void LoadMech()
     gMech.pos = Vector3Zeros;
     gMech.vel = Vector3Zeros;
 
+    Quaternion a = QuaternionFromEuler(0.0f, 0.0f, 0.0f * DEG2RAD);
+    Quaternion b = QuaternionFromEuler(0.0f, 0.0f, 190.0f * DEG2RAD);
+    Quaternion c = QuaternionRotateTowards(a, b, 180.0f * DEG2RAD);
+    Vector3 angles = QuaternionToEuler(c) * RAD2DEG;
+
     gMech.currDirMove = gMech.goalDirMove = Vector2UnitY;
     gMech.currDirAim = gMech.goalDirAim = Vector2UnitY;
 
@@ -96,10 +101,6 @@ void DrawMech(const Mech& mech)
 
 void DrawMechDebug(const Mech& mech)
 {
-    //float aimAngle = Vector2Angle(Vector2UnitY, mech.currDirAim);
-    //DrawAxesDebug(mech.pos, MatrixRotateZ(aimAngle), 25.0f, 10.0f);
-
-    // Must respect RHS coordinates (since using "up" as local_z, must supply vectors accordingly)!
     Vector3 aim = { mech.currDirAim.x, mech.currDirAim.y, 0.0f };
     DrawAxesDebug(mech.pos, MatrixLookRotation(Vector3UnitZ, aim), 25.0f, 10.0f);
 }

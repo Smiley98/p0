@@ -18,8 +18,6 @@ void GameLoad()
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(800, 800, "Game");
     SetTargetFPS(144);
-    
-    Vector3 z = Vector3CrossProduct(Vector3UnitX, Vector3UnitY);
 
     LoadShaders();
     LoadBuildings();

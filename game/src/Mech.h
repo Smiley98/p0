@@ -1,6 +1,6 @@
 #pragma once
 #include "raylib.h"
-#include "p0math.h"
+#include "raymathext.h"
 
 struct Mech
 {
@@ -17,11 +17,11 @@ struct Mech
     // 0.0 = full drag, 1.0 = no drag
     float drag;
 
-    float moveAngle;
-    float moveAngleGoal;
+    Quaternion legsRotation;
+    Quaternion legsRotationGoal;
 
-    float aimAngle;
-    float aimAngleGoal;
+    Quaternion torsoRotation;
+    Quaternion torsoRotationGoal;
 };
 
 extern Mech gMech;

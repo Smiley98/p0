@@ -81,5 +81,8 @@
     <ClInclude Include="src\DebugDraw.h">
       <Filter>Debug</Filter>
     </ClInclude>
+    <ClInclude Include="src\p0math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

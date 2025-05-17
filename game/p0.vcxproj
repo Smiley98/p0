@@ -138,6 +138,7 @@
     <ClInclude Include="src\DebugDraw.h" />
     <ClInclude Include="src\MechAnimation.h" />
     <ClInclude Include="src\Mech.h" />
+    <ClInclude Include="src\p0math.h" />
     <ClInclude Include="src\raymathext.h" />
     <ClInclude Include="src\Shaders.h" />
   </ItemGroup>

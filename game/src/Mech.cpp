@@ -13,26 +13,24 @@ void LoadMech()
     gMech.pos = Vector3Zeros;
     gMech.vel = Vector3Zeros;
 
-    Quaternion a = QuaternionFromEuler(0.0f, 0.0f, 0.0f * DEG2RAD);
-    Quaternion b = QuaternionFromEuler(0.0f, 0.0f, 190.0f * DEG2RAD);
-    Quaternion c = QuaternionRotateTowards(a, b, 180.0f * DEG2RAD);
-    Vector3 angles = QuaternionToEuler(c) * RAD2DEG;
-
-    gMech.currDirMove = gMech.goalDirMove = Vector2UnitY;
-    gMech.currDirAim = gMech.goalDirAim = Vector2UnitY;
+    gMech.moveAngle = gMech.moveAngleGoal = 0.0f;
+    gMech.aimAngle = gMech.aimAngleGoal = 0.0f;
 
     gMech.moveSpeed = 10.0f;
     gMech.turnSpeed = 100.0f * DEG2RAD;
 
     gMech.drag = 0.05f;
 
-    // TODO - Make QuaternionRotateTowards, then test by firing a grenade (and rotating it in its direction of motion)!
-    //Vector3 x = Vector3UnitX;
-    //Vector3 y = Vector3UnitY;
-    //Quaternion q = QuaternionFromVector3ToVector3(x, y);
-    //Vector3 axis;
-    //float angle;
-    //QuaternionToAxisAngle(q, &axis, &angle);
+    // Theory test success -- chooses optimal angle of -170 instead of 190!
+    Quaternion a = QuaternionFromEuler(0.0f, 0.0f, 0.0f * DEG2RAD);
+    Quaternion b = QuaternionFromEuler(0.0f, 0.0f, 190.0f * DEG2RAD);
+    Quaternion c = QuaternionRotateTowards(a, b, 180.0f * DEG2RAD);
+    Vector3 angles = QuaternionToEuler(c) * RAD2DEG;
+
+    // TODO - Make Mech simple - rotations will only happen about Z, so just store an angle instead of a quaternion.
+    // Use spherical lerp to rotate towards angles!
+    // Can even make MechDirection function - { cosf(angle), sinf(angle), 0.0f }. Forget 3d internal representation!
+    // Once mech is simplified, delegate grenade launching task!
 }
 
 void UnloadMech()
@@ -59,26 +57,33 @@ void UpdateMech(Mech& mech)
         aimY = fabsf(aimY) >= deadzone ? aimY : 0.0f;
         moveY *= -1.0f;
         aimY *= -1.0f;
+        Vector3 move{ moveX, moveY, 0.0f };
+        Vector3 aim{ aimX, aimY, 0.0f };
 
-        if (Vector2Length({ moveX, moveY }) >= deadzone)
+        if (Vector3Length(move) >= deadzone)
         {
-            mech.goalDirMove = Vector2Normalize({ moveX, moveY });
-        
-            // curr vs goal is just for smooth visuals. Motion is based directly on gamepad input (goal dir)
-            Vector2 vel = mech.goalDirMove * mech.moveSpeed;
-            mech.vel.x = vel.x;
-            mech.vel.y = vel.y;
+            move = Vector3Normalize(move); 
+            mech.vel = move * mech.moveSpeed;           // Mech logical move is instantaneous
+            mech.moveAngleGoal = p0Vector3Angle(move);  // Mech visual move is gradual
         }
-
-        if (Vector2Length({ aimX, aimY }) >= deadzone)
+        
+        if (Vector3Length(aim) >= deadzone)
         {
-            Vector2 aim = Vector2Normalize({ aimX, aimY });
-            mech.goalDirAim = aim;
-            mech.currDirAim = Vector2RotateTowards(mech.currDirAim, mech.goalDirAim, mech.turnSpeed * dt);
+            aim = Vector3Normalize(aim);
+            mech.aimAngleGoal = p0Vector3Angle(aim);
+
+            float aimCurr = mech.aimAngle;
+            float aimGoal = mech.aimAngleGoal;
+            Vector2 aimDir = Vector2RotateTowards(p0Vector2Direction(aimCurr), p0Vector2Direction(aimGoal), mech.turnSpeed * dt);
+            mech.aimAngle = p0Vector2Angle(aimDir);
         }
     }
 
-    mech.currDirMove = Vector2RotateTowards(mech.currDirMove, mech.goalDirMove, 250.0f * DEG2RAD * dt);
+    float moveCurr = mech.moveAngle;
+    float moveGoal = mech.moveAngleGoal;
+    Vector2 moveDir = Vector2RotateTowards(p0Vector2Direction(moveCurr), p0Vector2Direction(moveGoal), 250.0f * DEG2RAD * dt);
+    mech.moveAngle = p0Vector2Angle(moveDir);
+
     mech.vel *= powf(mech.drag, dt);
     mech.pos += mech.vel * dt;
 }
@@ -88,8 +93,8 @@ void DrawMech(const Mech& mech)
     // RHS positive rotation is CCW
     Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
 
-    Matrix rotationTorso = MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.currDirAim));
-    Matrix rotationLegs = MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.currDirMove));
+    Matrix rotationTorso = MatrixRotateZ(mech.aimAngle);
+    Matrix rotationLegs = MatrixRotateZ(mech.moveAngle);
 
     Matrix worldTorso = rotationTorso * translation;
     Matrix worldLegs = rotationLegs * translation;
@@ -101,20 +106,6 @@ void DrawMech(const Mech& mech)
 
 void DrawMechDebug(const Mech& mech)
 {
-    Vector3 aim = { mech.currDirAim.x, mech.currDirAim.y, 0.0f };
-    DrawAxesDebug(mech.pos, MatrixLookRotation(Vector3UnitZ, aim), 25.0f, 10.0f);
+    Vector3 aim = p0Vector3Direction(mech.aimAngle);
+    DrawAxesDebug(mech.pos, p0MatrixLookRotation(aim), 25.0f, 10.0f);
 }
-
-// If I want to pair text with lines, I'll need to make something like
-// struct MechDebug and update moveAngleDiff and aimAngleDiff there, then separate rendering between 2D vs 3D
-
-// Still, DrawMesh recomputes mvp, and resends m, v, p (and mvp). Begin/End aren't very expensive.
-// Overall more correct to do debug-related updates within update.
-
-// Original grenade implementation lerps its direction towards its velocity (all physics, no quadratic formula)
-// Original did so by using Frenet-frame to orientate in direction of motion ie rotation = Frenet(Lerp(dir, vel, 0.01))
-// I'll most likely need something similar if I'm trying to point an object in its direction of motion
-// (motion is a direction, not a rotation, so I can't use QuaternionRotateTowards).
-
-// Launch solution should be as simple as local-up = Cross(projectile_forward, mech_right)
-// where projectile_forward = mech_forward * launch_elevation

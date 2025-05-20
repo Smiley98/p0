@@ -75,11 +75,11 @@ void DrawMech(const Mech& mech)
     Matrix torso_rotation = QuaternionToMatrix(mech.torso_rotation);
     Matrix legs_rotation = QuaternionToMatrix(mech.legs_rotation);
 
-    Matrix torsoWorld = torso_rotation * translation;
-    Matrix legsWorld = legs_rotation * translation;
+    Matrix torso_world = torso_rotation * translation;
+    Matrix legs_world = legs_rotation * translation;
 
-    DrawMesh(*g_meshes.mech_torso, mech.material, torsoWorld);
-    DrawMesh(*g_meshes.mech_legs, mech.material, legsWorld);
+    DrawMesh(*g_meshes.mech_torso, mech.material, torso_world);
+    DrawMesh(*g_meshes.mech_legs, mech.material, legs_world);
 }
 
 void DrawMechDebug(const Mech& mech)

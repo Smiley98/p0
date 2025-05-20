@@ -11,30 +11,30 @@ enum CameraBehaviour
 
 struct CameraSystem
 {
-    Camera tdCamera;
-    Camera fpCamera;
-    Camera flCamera;
+    Camera td_camera;
+    Camera fp_camera;
+    Camera fl_camera;
     CameraBehaviour behaviour;
-    bool isEnabled;
+    bool is_enabled;
 };
 
-extern CameraSystem gCameraSystem;
+extern CameraSystem g_camera_system;
 
 inline Camera* GetCamera()
 {
     Camera* camera = nullptr;
-    switch (gCameraSystem.behaviour)
+    switch (g_camera_system.behaviour)
     {
     case CAM_TOP_DOWN:
-        camera = &gCameraSystem.tdCamera;
+        camera = &g_camera_system.td_camera;
         break;
 
     case CAM_FIRST_PERSON:
-        camera = &gCameraSystem.fpCamera;
+        camera = &g_camera_system.fp_camera;
         break;
 
     case CAM_FOLLOW:
-        camera = &gCameraSystem.flCamera;
+        camera = &g_camera_system.fl_camera;
         break;
     }
     return camera;

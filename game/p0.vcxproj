@@ -128,6 +128,7 @@
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SplashScreenScene.cpp" />
     <ClCompile Include="src\TeamSelectScene.cpp" />
+    <ClCompile Include="src\Textures.cpp" />
     <ClCompile Include="src\World.cpp" />
     <ClCompile Include="src\MechAnimation.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SplashScreenScene.h" />
     <ClInclude Include="src\TeamSelectScene.h" />
+    <ClInclude Include="src\Textures.h" />
     <ClInclude Include="src\Types.h" />
     <ClInclude Include="src\World.h" />
     <ClInclude Include="src\MechAnimation.h" />

@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Meshes.h"
 #include "Shaders.h"
+#include "Textures.h"
 #include "DebugDraw.h"
 
 #include "Scene.h"
@@ -14,10 +15,12 @@ void AppLoad()
     LoadCamera();
     LoadMeshes();
     LoadShaders();
+    LoadTextures();
 }
 
 void AppUnload()
 {
+    UnloadTextures();
     UnloadShaders();
     UnloadMeshes();
     UnloadCamera();

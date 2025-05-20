@@ -1,10 +1,35 @@
 #pragma once
 #include "raymath.h"
+#include <cstdlib>
+
+RMAPI float Random(float min, float max)
+{
+    return min + (rand() / ((float)RAND_MAX / (max - min)));
+}
 
 RMAPI float Sign(float value)
 {
     float result = value < 0.0f ? -1.0f : 1.0f;
     return result;
+}
+
+RMAPI Vector3 RandomSpherePosition(float radius)
+{
+    Vector3 position = Vector3Zeros;
+    position.x = Random(-1.0f, 1.0f);
+    position.y = Random(-1.0f, 1.0f);
+    position.z = Random(-1.0f, 1.0f);
+    position = Vector3Normalize(position) * radius;
+    return position;
+}
+
+RMAPI Vector3 RandomBoxPosition(Vector3 size)
+{
+    Vector3 position = Vector3Zeros;
+    position.x = Random(-size.x * 0.5f, size.x * 0.5f);
+    position.y = Random(-size.y * 0.5f, size.y * 0.5f);
+    position.z = Random(-size.z * 0.5f, size.z * 0.5f);
+    return position;
 }
 
 RMAPI float Vector2CrossProduct(Vector2 v1, Vector2 v2)

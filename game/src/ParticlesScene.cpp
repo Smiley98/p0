@@ -2,40 +2,48 @@
 #include "ParticleEmitter.h"
 #include "Camera.h"
 #include "rlgl.h"
+#include "Textures.h"
 
-Camera3D camera = { 0 };
-ParticleEmitter emitter;
-Texture2D TEX;
+// Lowkey this looks ugly as hell with f_ in front of everything
+// Feel free to prototype without following the rules.
+// Just be sure to follow convention before finalizing systems!
+//static Camera3D f_camera = { 0 };
+//static ParticleEmitter f_emitter;
+
+static Camera3D camera = { 0 };
+static ParticleEmitter emitter;
 
 void ParticlesScene::OnLoad()
 {
-    unsigned char pixels[4] = { 255, 255, 255, 255 };
-    unsigned int id = rlLoadTexture(pixels, 1, 1, RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
-    TEX.id = id;
-    TEX.width = 1;
-    TEX.height = 1;
-    TEX.format = RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
-    TEX.mipmaps = 1;
-
-    //Obviously this will be changed
     camera.position = { 0.0f, 0.0f, 10.0f };
     camera.target = { 0.0f, -4.0f, 0.0f };
     camera.up = { 0.0f, 1.0f, 0.0f };
     camera.fovy = 110.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
-    //I want ui to set this up and then save it to a file or something
-    //so in game you can just load the file and it will set up the emitter and whatever
     emitter.position = { 0.0f, -1.0f, -2.0f };
-    emitter.shape = ParticleEmitter::Shape::SPHERE;
-    emitter.spawnRate = 20.0f;
-    emitter.particleSpeed = 1.5f;
-    emitter.direction = { 0.5f, 1.0f, 0.0f };
-    emitter.particleSize = 0.3f;
+    emitter.direction = Vector3Normalize({ 0.5f, 1.0f, 0.0f } );
+
+    emitter.spawn_rate = 20.0f;
+    emitter.speed = 1.5f;
+    emitter.size = 0.3f;
     emitter.lifetime = 3.0f;
-    emitter.radius = 4;
-    //emitter.coneAngle = 45;
-    emitter.startColor = { 255, 255, 255, 255 };
+    emitter.color_src = WHITE;
+    emitter.color_dst = BLACK;
+
+    emitter.shape_type = PARTICLE_SHAPE_SPHERE;
+    switch (emitter.shape_type)
+    {
+    case PARTICLE_SHAPE_SPHERE:
+        emitter.shape.sphere.radius = 4.0f;
+        break;
+    case PARTICLE_SHAPE_BOX:
+        emitter.shape.box.size = Vector3Ones * 4.0f;
+        break;
+    case PARTICLE_SHAPE_CONE:
+        emitter.shape.cone.angle = 45.0f * DEG2RAD;
+        break;
+    }
 }
 
 void ParticlesScene::OnUnload()
@@ -52,13 +60,13 @@ void ParticlesScene::OnStop()
 
 void ParticlesScene::OnUpdate()
 {
-    emitter.Update(GetFrameTime());
+    UpdateParticleEmitter(emitter);
 }
 
 void ParticlesScene::OnDraw()
 {
     BeginMode3D(camera);
-    emitter.Draw(camera);
+    DrawParticleEmitter(emitter, camera);
     EndMode3D();
 }
 

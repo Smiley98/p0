@@ -1,0 +1,15 @@
+#pragma once
+
+enum BuildingType
+{
+	BUILDING_TD,
+	BUILDING_TYPE_COUNT
+};
+
+enum ProjectileType
+{
+	PROJECTILE_RIFLE,
+	PROJECTILE_SHOTGUN,
+	PROJECTILE_GRENADE,
+	PROJECTILE_TYPE_COUNT
+};

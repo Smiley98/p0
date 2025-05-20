@@ -1,13 +1,13 @@
 #include "Shaders.h"
 
-Shaders gShaders;
+Shaders g_shaders;
 
 void LoadShaders()
 {
-	gShaders.skinning = LoadShader("./assets/shaders/skinning.vs", "./assets/shaders/skinning.fs");
+	g_shaders.skinning = LoadShader("./assets/shaders/skinning.vs", "./assets/shaders/skinning.fs");
 }
 
 void UnloadShaders()
 {
-	UnloadShader(gShaders.skinning);
+	UnloadShader(g_shaders.skinning);
 }

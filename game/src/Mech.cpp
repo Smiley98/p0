@@ -1,37 +1,33 @@
 #include "Mech.h"
 #include "DebugDraw.h"
+#include "Meshes.h"
 
-void LoadMech()
+void CreateMech(Mech* mech, int player)
 {
-    gMech.material = LoadMaterialDefault();
-    gMech.material.maps[MATERIAL_MAP_DIFFUSE].color = DARKGRAY;
-    gMech.torso = LoadModel("./assets/meshes/mech_torso.obj");
-    gMech.legs = LoadModel("./assets/meshes/mech_legs.obj");
+    float roll = player % 2 == 0 ? 0.0f : PI;
+    Quaternion rotation = QuaternionFromEuler(0.0f, 0.0f, roll);
 
-    gMech.pos = Vector3Zeros;
-    gMech.vel = Vector3Zeros;
+    mech->legs_rotation = rotation;
+    mech->torso_rotation = rotation;
+    mech->legs_rotation_goal = rotation;
+    mech->torso_rotation_goal = rotation;
 
-    gMech.legsRotation = gMech.legsRotationGoal = QuaternionIdentity();
-    gMech.torsoRotation = gMech.torsoRotationGoal = QuaternionIdentity();
+    mech->material = LoadMaterialDefault();
+    mech->material.maps[MATERIAL_MAP_DIFFUSE].color = GRAY;
 
-    gMech.moveSpeed = 10.0f;
-    gMech.turnSpeed = 100.0f * DEG2RAD;
-
-    gMech.drag = 0.05f;
+    mech->player = player;
 }
 
-void UnloadMech()
+void DestroyMech(Mech* mech)
 {
-    UnloadModel(gMech.legs);
-    UnloadModel(gMech.torso);
-    UnloadMaterial(gMech.material);
+    UnloadMaterial(mech->material);
 }
 
 void UpdateMech(Mech& mech)
 {
     float dt = GetFrameTime();
 
-    if (IsGamepadAvailable(0))
+    if (IsGamepadAvailable(mech.player))
     {
         const float deadzone = 0.5f;
         float moveX = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X));
@@ -49,9 +45,9 @@ void UpdateMech(Mech& mech)
         {
             Vector2 dir = Vector2Normalize({ moveX, moveY });
             float roll = Vector2Angle(Vector2UnitY, dir);
-            mech.legsRotationGoal = QuaternionFromEuler(0.0f, 0.0f, roll);
+            mech.legs_rotation_goal = QuaternionFromEuler(0.0f, 0.0f, roll);
 
-            Vector2 vel = dir * mech.moveSpeed;
+            Vector2 vel = dir * mech.move_speed;
             mech.vel.x = vel.x;
             mech.vel.y = vel.y;
         }
@@ -60,12 +56,12 @@ void UpdateMech(Mech& mech)
         {
             Vector2 dir = Vector2Normalize({ aimX, aimY });
             float roll = Vector2Angle(Vector2UnitY, dir);
-            mech.torsoRotationGoal = QuaternionFromEuler(0.0f, 0.0f, roll);
+            mech.torso_rotation_goal = QuaternionFromEuler(0.0f, 0.0f, roll);
         }
     }
 
-    mech.legsRotation = QuaternionRotateTowards(mech.legsRotation, mech.legsRotationGoal, 250.0f * DEG2RAD * dt);
-    mech.torsoRotation = QuaternionRotateTowards(mech.torsoRotation, mech.torsoRotationGoal, 100.0f * DEG2RAD * dt);
+    mech.legs_rotation = QuaternionRotateTowards(mech.legs_rotation, mech.legs_rotation_goal, 250.0f * DEG2RAD * dt);
+    mech.torso_rotation = QuaternionRotateTowards(mech.torso_rotation, mech.torso_rotation_goal, 100.0f * DEG2RAD * dt);
 
     mech.vel *= powf(mech.drag, dt);
     mech.pos += mech.vel * dt;
@@ -76,17 +72,17 @@ void DrawMech(const Mech& mech)
     // RHS positive rotation is CCW
     Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
 
-    Matrix torsoRotation = QuaternionToMatrix(mech.torsoRotation);
-    Matrix legsRotation = QuaternionToMatrix(mech.legsRotation);
+    Matrix torso_rotation = QuaternionToMatrix(mech.torso_rotation);
+    Matrix legs_rotation = QuaternionToMatrix(mech.legs_rotation);
 
-    Matrix torsoWorld = torsoRotation * translation;
-    Matrix legsWorld = legsRotation * translation;
+    Matrix torsoWorld = torso_rotation * translation;
+    Matrix legsWorld = legs_rotation * translation;
 
-    DrawMesh(mech.torso.meshes[0], mech.material, torsoWorld);
-    DrawMesh(mech.legs.meshes[0], mech.material, legsWorld);
+    DrawMesh(*g_meshes.mech_torso, mech.material, torsoWorld);
+    DrawMesh(*g_meshes.mech_legs, mech.material, legsWorld);
 }
 
 void DrawMechDebug(const Mech& mech)
 {
-    DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torsoRotation), 25.0f, 10.0f);
+    DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
 }

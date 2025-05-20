@@ -6,7 +6,7 @@ struct Shaders
     Shader skinning;
 };
 
-extern Shaders gShaders;
+extern Shaders g_shaders;
 
 void LoadShaders();
 void UnloadShaders();

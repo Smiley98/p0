@@ -10,43 +10,67 @@
     <Filter Include="Application Resource Files">
       <UniqueIdentifier>{D4D62349-C0E6-CF19-29A0-343815CFBEB2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Mech">
-      <UniqueIdentifier>{dc0fefed-4927-4563-bce1-636870577771}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{4d2442a0-24ba-406f-bcd1-9789fcf1d0e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Buildings">
-      <UniqueIdentifier>{2f3770ee-70cf-4ff9-a47c-8bb1e2d8fdc7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{f67acc43-d257-4aac-940c-5c50c01b2bd9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Debug">
       <UniqueIdentifier>{67fdaeda-b048-467f-82a1-91ab894ff066}</UniqueIdentifier>
     </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{46d44ac6-febd-45f6-9552-7a1b7af5eb03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Projectile">
+      <UniqueIdentifier>{c85cce45-46b4-4f12-8f14-52af72710d11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Mech">
+      <UniqueIdentifier>{dc0fefed-4927-4563-bce1-636870577771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Buildings">
+      <UniqueIdentifier>{2f3770ee-70cf-4ff9-a47c-8bb1e2d8fdc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{a549e465-5f88-4f08-96f7-f101592839b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Shaders">
+      <UniqueIdentifier>{4d2442a0-24ba-406f-bcd1-9789fcf1d0e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Meshes">
+      <UniqueIdentifier>{ad7760a7-f0be-4f31-bedc-fff3e1ace3fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Animations">
+      <UniqueIdentifier>{7c4810c0-4004-4e77-aa39-cf0ee444c037}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MechAnimation.cpp">
-      <Filter>Mech</Filter>
-    </ClCompile>
     <ClCompile Include="src\Shaders.cpp">
-      <Filter>Shaders</Filter>
+      <Filter>Assets\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="src\Mech.cpp">
-      <Filter>Mech</Filter>
+      <Filter>World\Mech</Filter>
     </ClCompile>
-    <ClCompile Include="src\Buildings.cpp">
-      <Filter>Buildings</Filter>
+    <ClCompile Include="src\Building.cpp">
+      <Filter>World\Buildings</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="src\DebugDraw.cpp">
       <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Projectile.cpp">
+      <Filter>World\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Meshes.cpp">
+      <Filter>Assets\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MechAnimation.cpp">
+      <Filter>Assets\Animations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,17 +84,14 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\MechAnimation.h">
-      <Filter>Mech</Filter>
-    </ClInclude>
     <ClInclude Include="src\Shaders.h">
-      <Filter>Shaders</Filter>
+      <Filter>Assets\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\Mech.h">
-      <Filter>Mech</Filter>
+      <Filter>World\Mech</Filter>
     </ClInclude>
-    <ClInclude Include="src\Buildings.h">
-      <Filter>Buildings</Filter>
+    <ClInclude Include="src\Building.h">
+      <Filter>World\Buildings</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera.h">
       <Filter>Camera</Filter>
@@ -80,6 +101,21 @@
     </ClInclude>
     <ClInclude Include="src\DebugDraw.h">
       <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Projectile.h">
+      <Filter>World\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Meshes.h">
+      <Filter>Assets\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MechAnimation.h">
+      <Filter>Assets\Animations</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

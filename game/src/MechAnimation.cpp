@@ -1,19 +1,19 @@
 #include "MechAnimation.h"
 #include "Shaders.h"
 
-void LoadMechAnimation()
+void LoadMechAnimation(MechAnimation* ma)
 {
-    gMechAnimation.clips = LoadModelAnimations("./assets/meshes/mech.glb", &gMechAnimation.count);
-    gMechAnimation.model = LoadModel("./assets/meshes/mech.glb");
-
-    gMechAnimation.model.materials[1].shader = gShaders.skinning;
-    gMechAnimation.model.materials[1].maps[MATERIAL_MAP_DIFFUSE].color = DARKGRAY;
+    ma->clips = LoadModelAnimations("./assets/meshes/mech.glb", &ma->count);
+    ma->model = LoadModel("./assets/meshes/mech.glb");
+    
+    ma->model.materials[1].shader = g_shaders.skinning;
+    ma->model.materials[1].maps[MATERIAL_MAP_DIFFUSE].color = DARKGRAY;
 }
 
-void UnloadMechAnimation()
+void UnloadMechAnimation(MechAnimation* ma)
 {
-    UnloadModelAnimations(gMechAnimation.clips, gMechAnimation.count);
-    UnloadModel(gMechAnimation.model);
+    UnloadModelAnimations(ma->clips, ma->count);
+    UnloadModel(ma->model);
 }
 
 void UpdateMechAnimation(MechAnimation& ma)

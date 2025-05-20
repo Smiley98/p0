@@ -26,7 +26,7 @@ void AppUnload()
 int main()
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
-    InitWindow(800, 800, "Game");
+    InitWindow(800, 800, "PRIMEOPS ZERO");
     SetTargetFPS(144);
     AppLoad();
     Scene::Load(SCENE_DEV_MAP);

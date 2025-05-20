@@ -574,19 +574,6 @@ RMAPI Vector2 Vector2Refract(Vector2 v, Vector2 n, float r)
 }
 
 //----------------------------------------------------------------------------------
-// Custom Functions Definitions (Josh) - Vector2 math
-//----------------------------------------------------------------------------------
-
-// Projects point P onto line AB
-RMAPI Vector2 ProjectPointLine(Vector2 A, Vector2 B, Vector2 P)
-{
-    Vector2 AB = Vector2Subtract(B, A);
-    float t = Vector2Dot(Vector2Subtract(P, A), AB) / Vector2Dot(AB, AB);
-    return Vector2Add(A, Vector2Scale(AB, Clamp(t, 0.0f, 1.0f)));
-}
-
-
-//----------------------------------------------------------------------------------
 // Module Functions Definition - Vector3 math
 //----------------------------------------------------------------------------------
 

@@ -9,6 +9,14 @@ RMAPI bool Overlaps(float min1, float max1, float min2, float max2)
     return !((max1 < min2) || (max2 < min1));
 }
 
+// Projects point P onto line AB
+RMAPI Vector2 Vector2ProjectPointLine(Vector2 A, Vector2 B, Vector2 P)
+{
+    Vector2 AB = (B - A);
+    float t = Vector2DotProduct((P - A), AB) / Vector2DotProduct(AB, AB);
+    return A + (AB * Clamp(t, 0.0f, 1.0f));
+}
+
 // Outputs nearest two points along line top1_bot1 and line top2_bot2
 RMAPI void NearestPoints(
     Vector2 top1, Vector2 bot1,

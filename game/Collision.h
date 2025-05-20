@@ -126,17 +126,17 @@ RMAPI bool CapsuleRectangle(
     Vector2 min = rect - extents;
     Vector2 max = rect + extents;
 
-    Vector2 topLeft = rect + Vector2{ -extents.x, extents.y };
-    Vector2 topRight = rect + Vector2{ extents.x, extents.y };
-    Vector2 botLeft = rect + Vector2{ -extents.x, -extents.y };
-    Vector2 botRight = rect + Vector2{ extents.x, -extents.y };
+    Vector2 top_left = rect + Vector2{ -extents.x, extents.y };
+    Vector2 top_right = rect + Vector2{ extents.x, extents.y };
+    Vector2 bot_left = rect + Vector2{ -extents.x, -extents.y };
+    Vector2 bot_right = rect + Vector2{ extents.x, -extents.y };
 
     Vector2 fProjections[4]
     {
-        Vector2ProjectPointLine(top, bot, topLeft),
-        Vector2ProjectPointLine(top, bot, topRight),
-        Vector2ProjectPointLine(top, bot, botLeft),
-        Vector2ProjectPointLine(top, bot, botRight)
+        Vector2ProjectPointLine(top, bot, top_left),
+        Vector2ProjectPointLine(top, bot, top_right),
+        Vector2ProjectPointLine(top, bot, bot_left),
+        Vector2ProjectPointLine(top, bot, bot_right)
     };
 
     Vector2 clamps[4]

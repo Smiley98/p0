@@ -46,7 +46,7 @@ RMAPI bool CircleCapsule(
 {
     Vector2 top2 = pos2 + dir2 * hh2;
     Vector2 bot2 = pos2 - dir2 * hh2;
-    Vector2 proj = ProjectPointLine(top2, bot2, pos1);
+    Vector2 proj = Vector2ProjectPointLine(top2, bot2, pos1);
     return CircleCircle(pos1, rad1, proj, rad2, mtv);
 }
 
@@ -133,10 +133,10 @@ RMAPI bool CapsuleRectangle(
 
     Vector2 fProjections[4]
     {
-        ProjectPointLine(top, bot, topLeft),
-        ProjectPointLine(top, bot, topRight),
-        ProjectPointLine(top, bot, botLeft),
-        ProjectPointLine(top, bot, botRight)
+        Vector2ProjectPointLine(top, bot, topLeft),
+        Vector2ProjectPointLine(top, bot, topRight),
+        Vector2ProjectPointLine(top, bot, botLeft),
+        Vector2ProjectPointLine(top, bot, botRight)
     };
 
     Vector2 clamps[4]
@@ -219,15 +219,15 @@ RMAPI void NearestPoints(
     Vector2 top2, Vector2 bot2,
     Vector2& near1, Vector2& near2)
 {
-    Vector2 A = ProjectPointLine(top2, bot2, top1);
-    Vector2 B = ProjectPointLine(top2, bot2, bot1);
-    Vector2 C = ProjectPointLine(top1, bot1, A);
-    Vector2 D = ProjectPointLine(top1, bot1, B);
+    Vector2 A = Vector2ProjectPointLine(top2, bot2, top1);
+    Vector2 B = Vector2ProjectPointLine(top2, bot2, bot1);
+    Vector2 C = Vector2ProjectPointLine(top1, bot1, A);
+    Vector2 D = Vector2ProjectPointLine(top1, bot1, B);
     near1 = Vector2LengthSqr(A - C) < Vector2LengthSqr(B - D) ? C : D;
 
-    Vector2 E = ProjectPointLine(top1, bot1, top2);
-    Vector2 F = ProjectPointLine(top1, bot1, bot2);
-    Vector2 G = ProjectPointLine(top2, bot2, E);
-    Vector2 H = ProjectPointLine(top2, bot2, F);
+    Vector2 E = Vector2ProjectPointLine(top1, bot1, top2);
+    Vector2 F = Vector2ProjectPointLine(top1, bot1, bot2);
+    Vector2 G = Vector2ProjectPointLine(top2, bot2, E);
+    Vector2 H = Vector2ProjectPointLine(top2, bot2, F);
     near2 = Vector2LengthSqr(E - G) < Vector2LengthSqr(F - H) ? G : H;
 }

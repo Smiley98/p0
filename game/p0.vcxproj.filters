@@ -1,20 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{E9C7FDCE-D52A-8D73-7EB0-C5296AF258F6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{21EB8090-0D4E-1035-B6D3-48EBA215DCB7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Application Resource Files">
       <UniqueIdentifier>{D4D62349-C0E6-CF19-29A0-343815CFBEB2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{f67acc43-d257-4aac-940c-5c50c01b2bd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Debug">
-      <UniqueIdentifier>{67fdaeda-b048-467f-82a1-91ab894ff066}</UniqueIdentifier>
     </Filter>
     <Filter Include="World">
       <UniqueIdentifier>{46d44ac6-febd-45f6-9552-7a1b7af5eb03}</UniqueIdentifier>
@@ -49,11 +40,14 @@
     <Filter Include="Scenes\Deveopment">
       <UniqueIdentifier>{f9e536b1-ca84-4699-b04b-ac9d77bd0ef7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{769a4b9d-370c-4d9a-a407-a0d599163aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{67fdaeda-b048-467f-82a1-91ab894ff066}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Shaders.cpp">
       <Filter>Assets\Shaders</Filter>
     </ClCompile>
@@ -67,7 +61,7 @@
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="src\DebugDraw.cpp">
-      <Filter>Debug</Filter>
+      <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\World.cpp">
       <Filter>World</Filter>
@@ -111,6 +105,10 @@
     <ClCompile Include="src\PhysicsScene.cpp">
       <Filter>Scenes\Deveopment</Filter>
     </ClCompile>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ParticleEmitter.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -135,11 +133,8 @@
     <ClInclude Include="src\Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="src\raymathext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\DebugDraw.h">
-      <Filter>Debug</Filter>
+      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\World.h">
       <Filter>World</Filter>
@@ -149,9 +144,6 @@
     </ClInclude>
     <ClInclude Include="src\Meshes.h">
       <Filter>Assets\Meshes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Types.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\MechAnimation.h">
       <Filter>Assets\Animations</Filter>
@@ -185,6 +177,15 @@
     </ClInclude>
     <ClInclude Include="src\PhysicsScene.h">
       <Filter>Scenes\Deveopment</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Types.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\raymathext.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleEmitter.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

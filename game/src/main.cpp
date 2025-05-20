@@ -29,13 +29,13 @@ int main()
     InitWindow(800, 800, "PRIMEOPS ZERO");
     SetTargetFPS(144);
     AppLoad();
-    Scene::Load(SCENE_DEV_MAP);
+    Scene::Load(SCENE_DEV_PARTICLES);
 
     while (!WindowShouldClose())
     {
         Scene::Update();
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
         Scene::Draw();
         Scene::DrawDebug();
         Scene::DrawGui();

@@ -1,4 +1,6 @@
 #pragma once
+#include "raylib.h"
+#include "raymathext.h"
 
 enum SceneType : size_t
 {

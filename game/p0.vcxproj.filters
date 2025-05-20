@@ -40,6 +40,15 @@
     <Filter Include="Assets\Animations">
       <UniqueIdentifier>{7c4810c0-4004-4e77-aa39-cf0ee444c037}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes">
+      <UniqueIdentifier>{a878762c-6e5c-4f82-a9c3-ad25e03fe323}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\Game">
+      <UniqueIdentifier>{5370a084-ecd6-4a50-8314-4ac6eb8ba64c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\Deveopment">
+      <UniqueIdentifier>{f9e536b1-ca84-4699-b04b-ac9d77bd0ef7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -71,6 +80,36 @@
     </ClCompile>
     <ClCompile Include="src\MechAnimation.cpp">
       <Filter>Assets\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TeamSelectScene.cpp">
+      <Filter>Scenes\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SplashScreenScene.cpp">
+      <Filter>Scenes\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LoadoutSelectScene.cpp">
+      <Filter>Scenes\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BattleScene.cpp">
+      <Filter>Scenes\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AnimationsScene.cpp">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GearScene.cpp">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapScene.cpp">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticlesScene.cpp">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsScene.cpp">
+      <Filter>Scenes\Deveopment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +155,36 @@
     </ClInclude>
     <ClInclude Include="src\MechAnimation.h">
       <Filter>Assets\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TeamSelectScene.h">
+      <Filter>Scenes\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SplashScreenScene.h">
+      <Filter>Scenes\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LoadoutSelectScene.h">
+      <Filter>Scenes\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BattleScene.h">
+      <Filter>Scenes\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AnimationsScene.h">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GearScene.h">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MapScene.h">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticlesScene.h">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PhysicsScene.h">
+      <Filter>Scenes\Deveopment</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@
 #include "Shaders.h"
 #include "DebugDraw.h"
 
+#include "Scene.h"
 #include "World.h"
 
 void AppLoad()
@@ -28,26 +29,21 @@ int main()
     InitWindow(800, 800, "Game");
     SetTargetFPS(144);
     AppLoad();
+    Scene::Load(SCENE_DEV_MAP);
 
-    World world;
-    LoadWorld(world);
     while (!WindowShouldClose())
     {
-        UpdateCamera();
-        UpdateWorld(world);
-
+        Scene::Update();
         BeginDrawing();
         ClearBackground(RAYWHITE);
-
-        DrawWorld(world);
-        DrawWorldDebug(world);
-
-        DrawFPS(10, 10);
+        Scene::Draw();
+        Scene::DrawDebug();
+        Scene::DrawGui();
         EndDrawing();
     }
-    UnloadWorld(world);
-    AppUnload();
 
+    Scene::Unload();
+    AppUnload();
     CloseWindow();
     return 0;
 }

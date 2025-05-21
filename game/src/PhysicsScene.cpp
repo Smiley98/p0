@@ -10,7 +10,7 @@ static Camera camera;
 
 void PhysicsScene::OnLoad()
 {
-	// fovy is screen top / bot when orthographics
+	// fovy is screen top / bot when orthographic
 	// (yMin = -50, yMax = 50, xMin = -50 * aspect, xMax = 50 * aspect)
 	camera.position = Vector3UnitZ * 50.0f;
 	camera.target = Vector3Zeros;
@@ -44,8 +44,8 @@ void PhysicsScene::OnDraw()
 {
 	Color color = collision ? RED : GREEN;
 	BeginMode3D(camera);
-	DrawSphere(p0, 5.0f, color);
-	DrawSphere(p1, 5.0f, color);
+	DrawSphere(p0, radius, color);
+	DrawSphere(p1, radius, color);
 	EndMode3D();
 }
 

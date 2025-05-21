@@ -3,6 +3,14 @@
 
 CameraSystem g_camera_system;
 
+void SetCursor(bool enabled)
+{
+    if (enabled)
+        DisableCursor();
+    else
+        EnableCursor();
+}
+
 void LoadCamera()
 {
     Camera td_camera;
@@ -25,13 +33,13 @@ void LoadCamera()
     g_camera_system.td_camera = td_camera;
     g_camera_system.fp_camera = fp_camera;
     g_camera_system.behaviour = CAM_TOP_DOWN;
-    g_camera_system.is_enabled = true;
-    DisableCursor();
+    g_camera_system.is_enabled = false;
+
+    SetCursor(g_camera_system.is_enabled);
 }
 
 void UnloadCamera()
 {
-    EnableCursor();
 }
 
 void UpdateCamera()
@@ -46,10 +54,7 @@ void UpdateCamera()
     if (IsKeyPressed(KEY_V))
     {
         g_camera_system.is_enabled = !g_camera_system.is_enabled;
-        if (g_camera_system.is_enabled)
-            DisableCursor();
-        else
-            EnableCursor();
+        SetCursor(g_camera_system.is_enabled);
     }
 
     if (IsKeyPressed(KEY_C))

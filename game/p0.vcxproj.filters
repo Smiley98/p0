@@ -196,5 +196,8 @@
     <ClInclude Include="src\Textures.h">
       <Filter>Assets\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="src\Collision.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

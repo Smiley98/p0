@@ -13,6 +13,12 @@ RMAPI float Sign(float value)
     return result;
 }
 
+// Overlap along a single axis
+RMAPI bool Overlaps(float min1, float max1, float min2, float max2)
+{
+    return !((max1 < min2) || (max2 < min1));
+}
+
 RMAPI Vector3 RandomSpherePosition(float radius)
 {
     Vector3 position = Vector3Zeros;
@@ -44,6 +50,14 @@ RMAPI Vector2 Vector2RotateTowards(Vector2 from, Vector2 to, float maxRadiansDel
     float angleDelta = fminf(fabsf(angle), maxRadiansDelta) * Sign(angle);
     Vector2 result = Vector2Rotate(from, angleDelta);
     return result;
+}
+
+// Projects point P onto line AB
+RMAPI Vector2 Vector2ProjectPointLine(Vector2 A, Vector2 B, Vector2 P)
+{
+    Vector2 AB = (B - A);
+    float t = Vector2DotProduct((P - A), AB) / Vector2DotProduct(AB, AB);
+    return A + (AB * Clamp(t, 0.0f, 1.0f));
 }
 
 RMAPI float QuaternionAngle(Quaternion from, Quaternion to)

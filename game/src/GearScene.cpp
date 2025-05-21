@@ -1,5 +1,15 @@
 #include "GearScene.h"
 
+Rectangle RecFromCenter(int center_x, int center_y, int width, int height)
+{
+    Rectangle rec;
+    rec.x = center_x - width / 2;
+    rec.y = center_y - height / 2;
+    rec.width = width;
+    rec.height = height;
+    return rec;
+}
+
 void RayguiExample();
 
 void GearScene::OnLoad()
@@ -32,6 +42,10 @@ void GearScene::OnDrawDebug()
 
 void GearScene::OnDrawGui()
 {
+    Rectangle btnTest = RecFromCenter(GetScreenWidth() / 2, GetScreenHeight() / 2, 80, 40);
+    bool collision = CheckCollisionPointRec(GetMousePosition(), btnTest);
+    DrawRectangleRec(btnTest, collision ? RED : GREEN);
+
     // Decided against raygui for gear UI in the short-term since it can't draw textures
     //RayguiExample();
 }

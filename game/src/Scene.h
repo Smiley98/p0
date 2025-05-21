@@ -1,7 +1,6 @@
 #pragma once
 #include "raylib.h"
 #include "raymathext.h"
-#include "raygui.h"
 
 enum SceneType : size_t
 {
@@ -15,6 +14,7 @@ enum SceneType : size_t
 	SCENE_DEV_MAP,
 	SCENE_DEV_PARTICLES,
 	SCENE_DEV_PHYSICS,
+	SCENE_DEV_WIDGETS,
 
 	SCENE_TYPE_COUNT
 };

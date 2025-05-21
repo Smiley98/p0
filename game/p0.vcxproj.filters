@@ -49,6 +49,9 @@
     <Filter Include="Assets\Textures">
       <UniqueIdentifier>{e25a8f8e-c460-4e77-b4d4-524f851520d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Widgets">
+      <UniqueIdentifier>{e6188651-b1cd-4145-a914-27213dd5abbe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Shaders.cpp">
@@ -114,6 +117,12 @@
     </ClCompile>
     <ClCompile Include="src\Textures.cpp">
       <Filter>Assets\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WidgetsScene.cpp">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Widgets.cpp">
+      <Filter>Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +207,12 @@
     </ClInclude>
     <ClInclude Include="src\Collision.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WidgetsScene.h">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Widgets.h">
+      <Filter>Widgets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

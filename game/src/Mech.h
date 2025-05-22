@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "raymathext.h"
 
+struct World;
 struct Mech
 {
     Vector3 pos = Vector3Zeros;
@@ -24,6 +25,6 @@ struct Mech
 void CreateMech(Mech* mech, int player);
 void DestroyMech(Mech* mech);
 
-void UpdateMech(Mech& mech);
+void UpdateMech(Mech& mech, World& world);
 void DrawMech(const Mech& mech);
 void DrawMechDebug(const Mech& mech);

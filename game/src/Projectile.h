@@ -3,9 +3,6 @@
 #include "raymathext.h"
 #include "Types.h"
 
-#include <cassert>
-#include <vector>
-
 struct Projectile
 {
 	ProjectileType type;
@@ -15,6 +12,12 @@ struct Projectile
 
 	float radius; // <-- always used
 	float length; // <-- only used for capsules
+
+	// Not sure if we need to store rotation. May be able to get away with MatrixLookRotation(p.vel)
+	//Quaternion rotation;
+
+	//Material material;
+	//Mesh* mesh;
 
 	union
 	{
@@ -39,13 +42,9 @@ struct Projectile
 	};
 };
 
-inline Mesh* ProjectileMesh(ProjectileType type)
-{
+// Inline creation for now. Factories will get very complicated very fast!
+//void CreateProjectile(Projectile* p);
+//void DestroyProjectile(Projectile* p);
 
-}
-
-inline Material* ProjectileMaterial(ProjectileType type)
-{
-
-}
-
+void UpdateProjectile(Projectile& p);
+void DrawProjectile(const Projectile& p);

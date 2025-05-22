@@ -1,6 +1,20 @@
 #include "Mech.h"
 #include "DebugDraw.h"
 #include "Meshes.h"
+#include "World.h"
+
+Projectile CreateProjectile(const Mech& mech)
+{
+    Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
+
+    Projectile p;
+    p.pos = mech.pos + dir * 10.0f;
+    p.vel = dir * 10.0f;
+    p.radius = 2.5f;
+    p.length = 5.0f;
+    p.type = PROJECTILE_RIFLE;
+    return p;
+}
 
 void CreateMech(Mech* mech, int player)
 {
@@ -23,17 +37,17 @@ void DestroyMech(Mech* mech)
     UnloadMaterial(mech->material);
 }
 
-void UpdateMech(Mech& mech)
+void UpdateMech(Mech& mech, World& world)
 {
     float dt = GetFrameTime();
 
     if (IsGamepadAvailable(mech.player))
     {
         const float deadzone = 0.5f;
-        float moveX = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X));
-        float moveY = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y));
-        float aimX = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X));
-        float aimY = (GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y));
+        float moveX = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_LEFT_X));
+        float moveY = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_LEFT_Y));
+        float aimX = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_RIGHT_X));
+        float aimY = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_RIGHT_Y));
         moveX = fabsf(moveX) >= deadzone ? moveX : 0.0f;
         moveY = fabsf(moveY) >= deadzone ? moveY : 0.0f;
         aimX = fabsf(aimX) >= deadzone ? aimX : 0.0f;
@@ -57,6 +71,28 @@ void UpdateMech(Mech& mech)
             Vector2 dir = Vector2Normalize({ aimX, aimY });
             float roll = Vector2Angle(Vector2UnitY, dir);
             mech.torso_rotation_goal = QuaternionFromEuler(0.0f, 0.0f, roll);
+        }
+
+        if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
+        {
+            TraceLog(LOG_INFO, "Slot 0");
+            Projectile p = CreateProjectile(mech);
+            world.projectiles.push_back(p);
+        }
+
+        if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_1))
+        {
+            TraceLog(LOG_INFO, "Slot 1");
+        }
+
+        if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_1))
+        {
+            TraceLog(LOG_INFO, "Slot 2");
+        }
+
+        if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
+        {
+            TraceLog(LOG_INFO, "Slot 3");
         }
     }
 

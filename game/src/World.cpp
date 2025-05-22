@@ -52,10 +52,13 @@ void UpdateWorld(World& world)
 	UpdateCollisions(world);
 
     for (Mech& mech : world.mechs)
-        UpdateMech(mech);
+        UpdateMech(mech, world);
 
     for (Building& building : world.buildings)
         UpdateBuilding(building);
+
+    for (Projectile& projectile : world.projectiles)
+        UpdateProjectile(projectile);
 }
 
 void DrawWorld(const World& world)
@@ -168,14 +171,16 @@ void DrawMechs(const Mechs& mechs)
 
 void DrawBuildings(const Buildings& buildings)
 {
-    rlEnableWireMode();
+    //rlEnableWireMode();
     for (const Building& building : buildings)
         DrawBuilding(building);
-    rlDisableWireMode();
+    //rlDisableWireMode();
 }
 
 void DrawProjectiles(const Projectiles& projectiles)
 {
+    for (const Projectile& projectile : projectiles)
+        DrawProjectile(projectile);
 }
 
 // Collision cases:

@@ -1,12 +1,13 @@
 #pragma once
+#include <cstdint>
 
-enum BuildingType
+enum BuildingType : uint32_t
 {
 	BUILDING_TD,
 	BUILDING_TYPE_COUNT
 };
 
-enum ProjectileType
+enum ProjectileType : uint32_t
 {
 	PROJECTILE_RIFLE,
 	PROJECTILE_SHOTGUN,

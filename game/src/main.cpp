@@ -32,7 +32,7 @@ int main()
     InitWindow(800, 800, "PRIMEOPS ZERO");
     SetTargetFPS(144);
     AppLoad();
-    Scene::Load(SCENE_DEV_WIDGETS);
+    Scene::Load(SCENE_DEV_MAP);
 
     while (!WindowShouldClose())
     {

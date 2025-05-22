@@ -17,6 +17,9 @@ struct Meshes
 	//Mesh* gear_rifle;
 	//Mesh* gear_shotgun;
 	//Mesh* gear_grenade;
+
+	// Rendering projectiles as colliders until gameplay is finished
+	//Mesh* proj_bullet;
 };
 
 extern Meshes g_meshes;

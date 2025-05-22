@@ -5,7 +5,7 @@
 
 struct Projectile
 {
-	ProjectileType type;
+	ProjectileType type = PROJECTILE_TYPE_COUNT;
 
 	Vector3 pos;
 	Vector3 vel;

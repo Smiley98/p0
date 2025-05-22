@@ -64,8 +64,10 @@ void DrawProjectile(const Projectile& p)
 	{
 	case PROJECTILE_RIFLE:
 	case PROJECTILE_SHOTGUN:
-	case PROJECTILE_GRENADE:
 		DrawCapsule(top, bot, p.radius, 4, 4, color);
+		break;
+	case PROJECTILE_GRENADE:
+		DrawSphere(p.pos, p.radius, color);
 		break;
 	}
 }

@@ -3,17 +3,59 @@
 #include "Meshes.h"
 #include "World.h"
 
-Projectile CreateProjectile(const Mech& mech)
+void FireRifle(Mech& mech, World& world)
 {
-    Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
+    Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
 
     Projectile p;
-    p.pos = mech.pos + dir * 10.0f;
-    p.vel = dir * 10.0f;
-    p.radius = 2.5f;
-    p.length = 5.0f;
+    p.pos = mech.pos + mech_dir * 10.0f;
+    p.vel = mech_dir * 20.0f;
+    p.radius = 2.0f;
+    p.length = 8.0f;
     p.type = PROJECTILE_RIFLE;
-    return p;
+
+    world.projectiles.push_back(p);
+}
+
+void FireShotgun(Mech& mech, World& world)
+{
+    Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
+
+    Projectile projectiles[3];
+    for (int i = 0; i < 3; i++)
+    {
+        Projectile& p = projectiles[i];
+        Quaternion spread = QuaternionFromEuler(0.0f, 0.0f, (-30.0f + i * 30.0f) * DEG2RAD);
+        Vector3 dir = Vector3RotateByQuaternion(mech_dir, spread);
+
+        p.pos = mech.pos + mech_dir * 10.0f;
+        p.vel = dir * 15.0f;
+        p.radius = 3.0f;
+        p.length = 6.0f;
+        p.type = PROJECTILE_SHOTGUN;
+
+        world.projectiles.push_back(p);
+    }
+}
+
+void FireGrenade(Mech& mech, World& world)
+{
+    // In addition to rotation test, we need some sort of system to queue grenades
+    // *grenade launcher begin*
+    //      - fire grenade 1
+    //      - wait 0.2 seconds
+    //      - fire grenade 2
+    //      - wait 0.2 seconds
+    //      - fire grenade 3
+    //      - wait 0.2 seconds
+    //      - fire grenade 4
+    //      - wait 0.2 seconds
+    // *grenade launcher end*
+}
+
+void FireMachineGun(Mech& mech, World& world)
+{
+
 }
 
 void CreateMech(Mech* mech, int player)
@@ -76,18 +118,19 @@ void UpdateMech(Mech& mech, World& world)
         if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
         {
             TraceLog(LOG_INFO, "Slot 0");
-            Projectile p = CreateProjectile(mech);
-            world.projectiles.push_back(p);
+            FireRifle(mech, world);
         }
 
         if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_1))
         {
             TraceLog(LOG_INFO, "Slot 1");
+            FireShotgun(mech, world);
         }
 
         if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_1))
         {
             TraceLog(LOG_INFO, "Slot 2");
+            FireGrenade(mech, world);
         }
 
         if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))

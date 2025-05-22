@@ -1,7 +1,6 @@
 #pragma once
 #include "raymathext.h"
-// All formulas for circle, capsule, AABB, and infinite plane collision!
-// No need to add lines or polygons. SAT is overkill for this game.
+// All formulas for sphere, capsule, AABB, and infinite plane collision!
 
 // Outputs nearest two points along line top1_bot1 and line top2_bot2
 RMAPI void NearestLinePoints(
@@ -94,7 +93,7 @@ RMAPI bool CapsulePlane(
     return collision;
 }
 
-// mtv resolves rectangle from plane
+// mtv resolves box from plane
 RMAPI bool BoxPlane(
     Vector3 box, Vector3 extents,
     Vector3 plane, Vector3 normal,
@@ -104,7 +103,7 @@ RMAPI bool BoxPlane(
     return SpherePlane(near, 1.0f, plane, normal, mtv);
 }
 
-// mtv resolves circle from rectangle
+// mtv resolves sphere from box
 RMAPI bool SphereBox(
     Vector3 sphere, float radius,
     Vector3 box, Vector3 extents,
@@ -114,7 +113,7 @@ RMAPI bool SphereBox(
     return SphereSphere(sphere, radius, near, 1.0f, mtv);
 }
 
-// mtv resolves capsule from rectangle
+// mtv resolves capsule from box
 RMAPI bool CapsuleBox(
     Vector3 cap, Vector3 dir, float radius, float hh,
     Vector3 box, Vector3 extents,
@@ -201,7 +200,7 @@ RMAPI bool BoxBox(
         Overlaps(zMin1, zMax1, zMin2, zMax2);
     if (collision && mtv != nullptr)
     {
-        // Overlapping area (rectangle)
+        // Overlapping area (box)
         float xMin = fmaxf(xMin1, xMin2);
         float xMax = fminf(xMax1, xMax2);
         float yMin = fmaxf(yMin1, yMin2);
@@ -209,7 +208,7 @@ RMAPI bool BoxBox(
         float zMin = fmaxf(zMin1, zMin2);
         float zMax = fminf(zMax1, zMax2);
 
-        // Resolve along the shortest axis (x vs y)
+        // Resolve along the shortest axis (x vs y vs z)
         float x = xMax - xMin;
         float y = yMax - yMin;
         float z = zMax - zMin;

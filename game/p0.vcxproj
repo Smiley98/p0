@@ -155,6 +155,7 @@
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Collision.h" />
+    <ClInclude Include="src\Collision3D.h" />
     <ClInclude Include="src\DebugDraw.h" />
     <ClInclude Include="src\GearScene.h" />
     <ClInclude Include="src\LoadoutSelectScene.h" />

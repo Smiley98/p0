@@ -214,5 +214,8 @@
     <ClInclude Include="src\Widgets.h">
       <Filter>Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="src\Collision3D.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

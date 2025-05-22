@@ -1,5 +1,6 @@
 #include "PhysicsScene.h"
 #include "Collision.h"
+#include "Collision3D.h"
 #include "Camera.h"
 
 static Vector3 p0 = Vector3UnitX * -10.0f;
@@ -35,9 +36,9 @@ void PhysicsScene::OnUpdate()
 {
 	p0 = Vector3UnitX * sinf(GetTime()) * 10.0f;
 	p1 = Vector3UnitX * cosf(GetTime()) * 10.0f;
-	Vector2 v0{ p0.x, p0.y };
-	Vector2 v1{ p1.x, p1.y };
-	collision = CircleCircle(v0, radius, v1, radius);
+	Vector3 v0{ p0.x, p0.y , p0.z};
+	Vector3 v1{ p1.x, p1.y , p0.z};
+	collision = SphereSphere(v0, radius, v1, radius);
 }
 
 void PhysicsScene::OnDraw()

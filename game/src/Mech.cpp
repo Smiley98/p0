@@ -51,6 +51,17 @@ void FireGrenade(Mech& mech, World& world)
     //      - fire grenade 4
     //      - wait 0.2 seconds
     // *grenade launcher end*
+
+    Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
+    Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, 0.0f)));
+
+    Projectile p;
+    p.pos = mech.pos + mech_dir * 10.0f;
+    p.vel = dir * 20.0f;
+    p.radius = 4.0f;
+    p.type = PROJECTILE_GRENADE;
+
+    world.projectiles.push_back(p);
 }
 
 void FireMachineGun(Mech& mech, World& world)
@@ -136,6 +147,7 @@ void UpdateMech(Mech& mech, World& world)
         if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
         {
             TraceLog(LOG_INFO, "Slot 3");
+            FireMachineGun(mech, world);
         }
     }
 

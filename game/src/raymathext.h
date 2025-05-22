@@ -82,25 +82,24 @@ RMAPI Quaternion QuaternionRotateTowards(Quaternion from, Quaternion to, float m
     return QuaternionSlerp(from, to, t);
 }
 
-RMAPI Matrix MatrixLookRotation(Vector3 forward, Vector3 up)
+RMAPI Matrix MatrixLookRotation(Vector3 direction)
 {
-    Vector3 right = Vector3Normalize(Vector3CrossProduct(up, forward));
-    up = Vector3Normalize(Vector3CrossProduct(forward, right));
+    Vector3 forward = Vector3Normalize(direction);
+    Vector3 right = Vector3Normalize(Vector3CrossProduct(forward, Vector3UnitZ));
+    Vector3 up = Vector3Normalize(Vector3CrossProduct(right, forward));
 
     Matrix mat = MatrixIdentity();
-
     mat.m0 = right.x;
     mat.m1 = right.y;
     mat.m2 = right.z;
 
-    mat.m4 = up.x;
-    mat.m5 = up.y;
-    mat.m6 = up.z;
+    mat.m4 = forward.x;
+    mat.m5 = forward.y;
+    mat.m6 = forward.z;
 
-    mat.m8 = forward.x;
-    mat.m9 = forward.y;
-    mat.m10 = forward.z;
-
+    mat.m8 = up.x;
+    mat.m9 = up.y;
+    mat.m10 = up.z;
     return mat;
 }
 
@@ -121,3 +120,26 @@ RMAPI Vector3 MatrixColZ(Matrix m)
     Vector3 result = { m.m8, m.m9, m.m10 };
     return result;
 }
+
+// Since p0 is y-forward, the following textbook way of constructing a rotation matrix produces unintended results:
+//RMAPI Matrix MatrixLookRotation(Vector3 forward, Vector3 up)
+//{
+//    Matrix mat = MatrixIdentity();
+//
+//    Vector3 right = Vector3Normalize(Vector3CrossProduct(up, forward));
+//    up = Vector3Normalize(Vector3CrossProduct(forward, right));
+//
+//    mat.m0 = right.x;
+//    mat.m1 = right.y;
+//    mat.m2 = right.z;
+//
+//    mat.m4 = up.x;
+//    mat.m5 = up.y;
+//    mat.m6 = up.z;
+//
+//    mat.m8 = forward.x;
+//    mat.m9 = forward.y;
+//    mat.m10 = forward.z;
+//
+//    return mat;
+//}

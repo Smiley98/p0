@@ -53,3 +53,8 @@ void DrawBuilding(const Building& building)
 {
     DrawMesh(*BuildingMesh(building.type), building.material, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
 }
+
+void DrawBuildingDebug(const Building& building)
+{
+    // Draw colliders & local axes here
+}

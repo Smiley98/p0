@@ -75,8 +75,16 @@ void DrawWorldDebug(const World& world)
 {
     // TODO - 2D vs 3D debug draw for lines vs text
     BeginMode3D(*GetCamera());
+
     for (const Mech& mech : world.mechs)
         DrawMechDebug(mech);
+
+    for (const Building& building : world.buildings)
+        DrawBuildingDebug(building);
+
+    for (const Projectile& projectile : world.projectiles)
+        DrawProjectileDebug(projectile);
+
     EndMode3D();
 }
 

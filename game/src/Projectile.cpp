@@ -1,6 +1,7 @@
 #include "Projectile.h"
 #include "Meshes.h"
 #include <cassert>
+#include "DebugDraw.h"
 
 // Rendering everything as debug colliders so we don't have to "guess" what our physics are doing
 //inline Mesh* ProjectileMesh(ProjectileType type)
@@ -50,6 +51,12 @@ inline Color ProjectileColor(ProjectileType type)
 void UpdateProjectile(Projectile& p)
 {
 	float dt = GetFrameTime();
+
+	if (p.type == PROJECTILE_GRENADE)
+	{
+		p.vel += Vector3UnitZ * -10.0f * dt;
+	}
+
 	p.pos += p.vel * dt;
 }
 
@@ -70,4 +77,11 @@ void DrawProjectile(const Projectile& p)
 		DrawSphere(p.pos, p.radius, color);
 		break;
 	}
+}
+
+void DrawProjectileDebug(const Projectile& p)
+{
+	Vector3 dir = Vector3Normalize(p.vel);
+	DrawLineDebug(p.pos, p.pos + dir * 7.5f, ORANGE, 5.0f);
+	DrawAxesDebug(p.pos, MatrixLookRotation(dir), 10.0f, 2.0f);
 }

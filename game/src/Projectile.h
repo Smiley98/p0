@@ -48,3 +48,4 @@ struct Projectile
 
 void UpdateProjectile(Projectile& p);
 void DrawProjectile(const Projectile& p);
+void DrawProjectileDebug(const Projectile& p);

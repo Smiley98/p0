@@ -1,6 +1,13 @@
 #pragma once
 #include "raylib.h"
 #include "raymathext.h"
+struct TProjectile {
+    Vector3 pos;
+    Vector3 vel;
+	Quaternion rotation;
+    Material projectileMaterial;
+    bool active = false;
+};
 
 struct Mech
 {
@@ -17,7 +24,8 @@ struct Mech
     Quaternion torso_rotation_goal;
 
     Material material;
-
+    //temp
+	TProjectile projectile;
     int player = 0;
 };
 

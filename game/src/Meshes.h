@@ -16,7 +16,7 @@ struct Meshes
 	// TODO - Load these once world-systems work ;)
 	//Mesh* gear_rifle;
 	//Mesh* gear_shotgun;
-	//Mesh* gear_grenade;
+	Mesh* gear_grenade;
 };
 
 extern Meshes g_meshes;

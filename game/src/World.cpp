@@ -103,6 +103,7 @@ void LoadBuildings(Buildings& buildings)
 
 void LoadProjectiles(Projectiles& projectiles)
 {
+	
 }
 
 void UnloadProjectiles(Projectiles& projectiles)

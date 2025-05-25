@@ -3,6 +3,141 @@
 #include "Meshes.h"
 #include "World.h"
 
+void UpdateMechTorso(Mech& mech);
+void UpdateMechLegs(Mech& mech);
+void UpdateMechGear(Mech& mech, World& world);
+
+void FireRifle(Mech& mech, World& world);
+void FireShotgun(Mech& mech, World& world);
+void FireGrenade(Mech& mech, World& world);
+void FireMachineGun(Mech& mech, World& world);
+
+void CreateMech(Mech* mech, int player)
+{
+    float roll = player % 2 == 0 ? 0.0f : PI;
+    Quaternion rotation = QuaternionFromEuler(0.0f, 0.0f, roll);
+
+    mech->legs_rotation = rotation;
+    mech->torso_rotation = rotation;
+    mech->legs_rotation_goal = rotation;
+    mech->torso_rotation_goal = rotation;
+
+    mech->material = LoadMaterialDefault();
+    mech->material.maps[MATERIAL_MAP_DIFFUSE].color = GRAY;
+
+    mech->player = player;
+}
+
+void DestroyMech(Mech* mech)
+{
+    UnloadMaterial(mech->material);
+}
+
+void UpdateMech(Mech& mech, World& world)
+{
+    if (!IsGamepadAvailable(mech.player))
+    {
+        TraceLog(LOG_WARNING, "Player %i gamepad polled but not found");
+        return;
+    }
+
+    UpdateMechTorso(mech);
+    UpdateMechLegs(mech);
+    UpdateMechGear(mech, world);
+
+    float dt = GetFrameTime();
+    mech.vel *= powf(mech.drag, dt);
+    mech.pos += mech.vel * dt;
+}
+
+void DrawMech(const Mech& mech)
+{
+    Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
+
+    Matrix torso_rotation = QuaternionToMatrix(mech.torso_rotation);
+    Matrix legs_rotation = QuaternionToMatrix(mech.legs_rotation);
+
+    Matrix torso_world = torso_rotation * translation;
+    Matrix legs_world = legs_rotation * translation;
+
+    DrawMesh(*g_meshes.mech_torso, mech.material, torso_world);
+    DrawMesh(*g_meshes.mech_legs, mech.material, legs_world);
+}
+
+void DrawMechDebug(const Mech& mech)
+{
+    DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
+}
+
+void UpdateMechTorso(Mech& mech)
+{
+    const float deadzone = 0.1f;
+    Vector2 input = Vector2Zeros;
+    input.x = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_RIGHT_X));
+    input.y = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_RIGHT_Y));
+    input.x = fabsf(input.x) >= deadzone ? input.x : 0.0f;
+    input.y = fabsf(input.y) >= deadzone ? input.y : 0.0f;
+    input.y *= -1.0f;
+
+    if (Vector2Length(input) >= deadzone)
+    {
+        Vector2 dir = Vector2Normalize(input);
+        float roll = Vector2Angle(Vector2UnitY, dir);
+        mech.torso_rotation_goal = QuaternionFromEuler(0.0f, 0.0f, roll);
+        mech.torso_rotation = QuaternionRotateTowards(mech.torso_rotation, mech.torso_rotation_goal, 100.0f * DEG2RAD * GetFrameTime());
+    }
+}
+
+void UpdateMechLegs(Mech& mech)
+{
+    const float deadzone = 0.1f;
+    Vector2 input = Vector2Zeros;
+    input.x = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_LEFT_X));
+    input.y = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_LEFT_Y));
+    input.x = fabsf(input.x) >= deadzone ? input.x : 0.0f;
+    input.y = fabsf(input.y) >= deadzone ? input.y : 0.0f;
+    input.y *= -1.0f;
+
+    if (Vector2Length(input) >= deadzone)
+    {
+        float dt = GetFrameTime();
+        Vector2 dir = Vector2Normalize(input);
+        float roll = Vector2Angle(Vector2UnitY, dir);
+        mech.legs_rotation_goal = QuaternionFromEuler(0.0f, 0.0f, roll);
+        mech.legs_rotation = QuaternionRotateTowards(mech.legs_rotation, mech.legs_rotation_goal, 250.0f * DEG2RAD * dt);
+
+        mech.vel += Vector3{ dir.x, dir.y, 0.0f } * mech.move_speed * dt;
+        mech.vel = Vector3Clamp(mech.vel, { -10.0f, -10.0f, 0.0f }, { 10.0f, 10.0f, 0.0f });
+    }
+}
+
+void UpdateMechGear(Mech& mech, World& world)
+{
+    if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
+    {
+        TraceLog(LOG_INFO, "Slot 0");
+        FireRifle(mech, world);
+    }
+
+    if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_1))
+    {
+        TraceLog(LOG_INFO, "Slot 1");
+        FireShotgun(mech, world);
+    }
+
+    if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_1))
+    {
+        TraceLog(LOG_INFO, "Slot 2");
+        FireGrenade(mech, world);
+    }
+
+    if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
+    {
+        TraceLog(LOG_INFO, "Slot 3");
+        FireMachineGun(mech, world);
+    }
+}
+
 void FireRifle(Mech& mech, World& world)
 {
     Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
@@ -67,113 +202,4 @@ void FireGrenade(Mech& mech, World& world)
 void FireMachineGun(Mech& mech, World& world)
 {
 
-}
-
-void CreateMech(Mech* mech, int player)
-{
-    float roll = player % 2 == 0 ? 0.0f : PI;
-    Quaternion rotation = QuaternionFromEuler(0.0f, 0.0f, roll);
-
-    mech->legs_rotation = rotation;
-    mech->torso_rotation = rotation;
-    mech->legs_rotation_goal = rotation;
-    mech->torso_rotation_goal = rotation;
-
-    mech->material = LoadMaterialDefault();
-    mech->material.maps[MATERIAL_MAP_DIFFUSE].color = GRAY;
-
-    mech->player = player;
-}
-
-void DestroyMech(Mech* mech)
-{
-    UnloadMaterial(mech->material);
-}
-
-void UpdateMech(Mech& mech, World& world)
-{
-    float dt = GetFrameTime();
-
-    if (IsGamepadAvailable(mech.player))
-    {
-        const float deadzone = 0.5f;
-        float moveX = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_LEFT_X));
-        float moveY = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_LEFT_Y));
-        float aimX = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_RIGHT_X));
-        float aimY = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_RIGHT_Y));
-        moveX = fabsf(moveX) >= deadzone ? moveX : 0.0f;
-        moveY = fabsf(moveY) >= deadzone ? moveY : 0.0f;
-        aimX = fabsf(aimX) >= deadzone ? aimX : 0.0f;
-        aimY = fabsf(aimY) >= deadzone ? aimY : 0.0f;
-        moveY *= -1.0f;
-        aimY *= -1.0f;
-        
-        if (Vector2Length({ moveX, moveY }) >= deadzone)
-        {
-            Vector2 dir = Vector2Normalize({ moveX, moveY });
-            float roll = Vector2Angle(Vector2UnitY, dir);
-            mech.legs_rotation_goal = QuaternionFromEuler(0.0f, 0.0f, roll);
-
-            Vector2 vel = dir * mech.move_speed;
-            mech.vel.x = vel.x;
-            mech.vel.y = vel.y;
-        }
-        
-        if (Vector2Length({ aimX, aimY }) >= deadzone)
-        {
-            Vector2 dir = Vector2Normalize({ aimX, aimY });
-            float roll = Vector2Angle(Vector2UnitY, dir);
-            mech.torso_rotation_goal = QuaternionFromEuler(0.0f, 0.0f, roll);
-        }
-
-        if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
-        {
-            TraceLog(LOG_INFO, "Slot 0");
-            FireRifle(mech, world);
-        }
-
-        if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_1))
-        {
-            TraceLog(LOG_INFO, "Slot 1");
-            FireShotgun(mech, world);
-        }
-
-        if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_1))
-        {
-            TraceLog(LOG_INFO, "Slot 2");
-            FireGrenade(mech, world);
-        }
-
-        if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
-        {
-            TraceLog(LOG_INFO, "Slot 3");
-            FireMachineGun(mech, world);
-        }
-    }
-
-    mech.legs_rotation = QuaternionRotateTowards(mech.legs_rotation, mech.legs_rotation_goal, 250.0f * DEG2RAD * dt);
-    mech.torso_rotation = QuaternionRotateTowards(mech.torso_rotation, mech.torso_rotation_goal, 100.0f * DEG2RAD * dt);
-
-    mech.vel *= powf(mech.drag, dt);
-    mech.pos += mech.vel * dt;
-}
-
-void DrawMech(const Mech& mech)
-{
-    // RHS positive rotation is CCW
-    Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
-
-    Matrix torso_rotation = QuaternionToMatrix(mech.torso_rotation);
-    Matrix legs_rotation = QuaternionToMatrix(mech.legs_rotation);
-
-    Matrix torso_world = torso_rotation * translation;
-    Matrix legs_world = legs_rotation * translation;
-
-    DrawMesh(*g_meshes.mech_torso, mech.material, torso_world);
-    DrawMesh(*g_meshes.mech_legs, mech.material, legs_world);
-}
-
-void DrawMechDebug(const Mech& mech)
-{
-    DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
 }

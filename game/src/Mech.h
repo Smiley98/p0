@@ -9,7 +9,7 @@ struct Mech
     Vector3 vel = Vector3Zeros;
 
     float turn_speed = 100.0f * DEG2RAD;
-    float move_speed = 10.0f;
+    float move_speed = 100.0f;
     float drag = 0.05f; // 0.0 = full drag, 1.0 = no drag
 
     Quaternion legs_rotation;

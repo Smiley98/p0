@@ -1,16 +1,17 @@
 #include "Mech.h"
 #include "DebugDraw.h"
 #include "Meshes.h"
+
 #include "World.h"
+#include "Projectile.h"
+#include <cassert>
 
-void UpdateMechTorso(Mech& mech);
-void UpdateMechLegs(Mech& mech);
-void UpdateMechGear(Mech& mech, World& world);
+void UpdateInputMove(Mech& mech);
+void UpdateInputAim(Mech& mech);
+void UpdateInputFire(Mech& mech, World& world);
 
-void FireRifle(Mech& mech, World& world);
-void FireShotgun(Mech& mech, World& world);
-void FireGrenade(Mech& mech, World& world);
-void FireMachineGun(Mech& mech, World& world);
+void FireGear(Mech& mech, World& world, int slot);
+void UpdateGear(Mech& mech, World& world, int slot);
 
 void CreateMech(Mech* mech, int player)
 {
@@ -26,6 +27,12 @@ void CreateMech(Mech* mech, int player)
     mech->material.maps[MATERIAL_MAP_DIFFUSE].color = GRAY;
 
     mech->player = player;
+
+    // Default loadout / testing
+    mech->gear[0] = CreateGearRifle();
+    mech->gear[1] = CreateGearShotgun();
+    mech->gear[2] = CreateGearGrenadeLauncher();
+    mech->gear[3] = CreateGearMissileLauncher();
 }
 
 void DestroyMech(Mech* mech)
@@ -41,9 +48,12 @@ void UpdateMech(Mech& mech, World& world)
         return;
     }
 
-    UpdateMechTorso(mech);
-    UpdateMechLegs(mech);
-    UpdateMechGear(mech, world);
+    UpdateInputAim(mech);
+    UpdateInputMove(mech);
+    UpdateInputFire(mech, world);
+    
+    for (int i = 0; i < 4; i++)
+        UpdateGear(mech, world, i);
 
     float dt = GetFrameTime();
     mech.vel *= powf(mech.drag, dt);
@@ -69,7 +79,7 @@ void DrawMechDebug(const Mech& mech)
     DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
 }
 
-void UpdateMechTorso(Mech& mech)
+void UpdateInputAim(Mech& mech)
 {
     const float deadzone = 0.1f;
     Vector2 input = Vector2Zeros;
@@ -88,7 +98,7 @@ void UpdateMechTorso(Mech& mech)
     }
 }
 
-void UpdateMechLegs(Mech& mech)
+void UpdateInputMove(Mech& mech)
 {
     const float deadzone = 0.1f;
     Vector2 input = Vector2Zeros;
@@ -111,95 +121,81 @@ void UpdateMechLegs(Mech& mech)
     }
 }
 
-void UpdateMechGear(Mech& mech, World& world)
+void UpdateInputFire(Mech& mech, World& world)
 {
-    if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
+    if (IsGamepadButtonDown(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
     {
-        TraceLog(LOG_INFO, "Slot 0");
-        FireRifle(mech, world);
+        FireGear(mech, world, 0);
     }
 
-    if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_1))
+    if (IsGamepadButtonDown(mech.player, GAMEPAD_BUTTON_LEFT_TRIGGER_1))
     {
-        TraceLog(LOG_INFO, "Slot 1");
-        FireShotgun(mech, world);
+        FireGear(mech, world, 1);
     }
 
-    if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_1))
+    if (IsGamepadButtonDown(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_1))
     {
-        TraceLog(LOG_INFO, "Slot 2");
-        FireGrenade(mech, world);
+        FireGear(mech, world, 2);
     }
 
-    if (IsGamepadButtonPressed(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
+    if (IsGamepadButtonDown(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
     {
-        TraceLog(LOG_INFO, "Slot 3");
-        FireMachineGun(mech, world);
+        FireGear(mech, world, 3);
     }
 }
 
-void FireRifle(Mech& mech, World& world)
+void FireGear(Mech& mech, World& world, int slot)
 {
-    Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
-
-    Projectile p;
-    p.pos = mech.pos + mech_dir * 10.0f;
-    p.vel = mech_dir * 20.0f;
-    p.radius = 2.0f;
-    p.length = 8.0f;
-    p.type = PROJECTILE_RIFLE;
-
-    world.projectiles.push_back(p);
-}
-
-void FireShotgun(Mech& mech, World& world)
-{
-    Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
-
-    Projectile projectiles[3];
-    for (int i = 0; i < 3; i++)
+    Gear& gear = mech.gear[slot];
+    if (gear.cooldown <= 0.0f)
     {
-        Projectile& p = projectiles[i];
-        Quaternion spread = QuaternionFromEuler(0.0f, 0.0f, (-30.0f + i * 30.0f) * DEG2RAD);
-        Vector3 dir = Vector3RotateByQuaternion(mech_dir, spread);
+        TraceLog(LOG_INFO, "Slot %i", slot);
+        gear.cooldown = gear.cooldown_max;
+        switch (gear.type)
+        {
+        case GEAR_RIFLE:
+            CreateProjectileRifle(mech, world);
+            break;
 
-        p.pos = mech.pos + mech_dir * 10.0f;
-        p.vel = dir * 15.0f;
-        p.radius = 3.0f;
-        p.length = 6.0f;
-        p.type = PROJECTILE_SHOTGUN;
+        case GEAR_SHOTGUN:
+            CreateProjectileShotgun(mech, world);
+            break;
 
-        world.projectiles.push_back(p);
+        case GEAR_GRENADE_LAUNCHER:
+            gear.grenade_launcher.grenades = 4;
+            break;
+
+        case GEAR_MISSILE_LAUNCHER:
+            gear.missile_launcher.missiles = 3;
+            break;
+
+        case GEAR_TYPE_COUNT:
+            assert(false, "Invalid gear type!");
+            break;
+        }
     }
+    // Don't need FireGearX functions yet. Either create projectile or defer to UpdateGear
 }
 
-void FireGrenade(Mech& mech, World& world)
+void UpdateGear(Mech& mech, World& world, int slot)
 {
-    // In addition to rotation test, we need some sort of system to queue grenades
-    // *grenade launcher begin*
-    //      - fire grenade 1
-    //      - wait 0.2 seconds
-    //      - fire grenade 2
-    //      - wait 0.2 seconds
-    //      - fire grenade 3
-    //      - wait 0.2 seconds
-    //      - fire grenade 4
-    //      - wait 0.2 seconds
-    // *grenade launcher end*
+    Gear& gear = mech.gear[slot];
+    float dt = GetFrameTime();
+    gear.cooldown -= dt;
 
-    Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
-    Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, 0.0f)));
+    if (gear.type == GEAR_GRENADE_LAUNCHER)
+    {
+        GearGrenadeLauncher& g = gear.grenade_launcher;
+        g.launch_cooldown -= dt;
+        if (g.launch_cooldown <= 0.0f && g.grenades > 0)
+        {           
+            CreateProjectileGrenade(mech, world);
+            g.grenades--;
+            g.launch_cooldown = g.launch_cooldown_max;
+        }
+    }
+    else if (gear.type == GEAR_MISSILE_LAUNCHER)
+    {
 
-    Projectile p;
-    p.pos = mech.pos + mech_dir * 10.0f;
-    p.vel = dir * 20.0f;
-    p.radius = 4.0f;
-    p.type = PROJECTILE_GRENADE;
-
-    world.projectiles.push_back(p);
-}
-
-void FireMachineGun(Mech& mech, World& world)
-{
-
+    }
 }

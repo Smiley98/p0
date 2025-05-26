@@ -1,6 +1,7 @@
 #pragma once
 #include "raylib.h"
 #include "raymathext.h"
+#include "Gear.h"
 
 struct World;
 struct Mech
@@ -20,6 +21,8 @@ struct Mech
     Material material;
 
     int player = 0;
+
+    Gear gear[4];
 };
 
 void CreateMech(Mech* mech, int player);

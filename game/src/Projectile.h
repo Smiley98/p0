@@ -3,6 +3,8 @@
 #include "raymathext.h"
 #include "Types.h"
 
+struct Mech;
+struct World;
 struct Projectile
 {
 	ProjectileType type = PROJECTILE_TYPE_COUNT;
@@ -38,14 +40,22 @@ struct Projectile
 			float move_speed;
 			float turn_speed;
 			uint32_t target_id;
-		};
+		} missile;
 	};
 };
 
-// Inline creation for now. Factories will get very complicated very fast!
-//void CreateProjectile(Projectile* p);
+// Add this once we start rendering projectiles and we need to delete their materials
 //void DestroyProjectile(Projectile* p);
 
 void UpdateProjectile(Projectile& p);
 void DrawProjectile(const Projectile& p);
 void DrawProjectileDebug(const Projectile& p);
+
+void CreateProjectileRifle(Mech& mech, World& world);
+void CreateProjectileShotgun(Mech& mech, World& world);
+void CreateProjectileGrenade(Mech& mech, World& world);
+void CreateProjectileMissile(Mech& mech, World& world);
+
+// Will probably need to add more arguments to projectile creation functions
+// Also not sure if creation functions should be responsible for adding them to world,
+// but its more convenient than looping through 3 shotgun projectiles externally...

@@ -3,6 +3,9 @@
 #include <cassert>
 #include "DebugDraw.h"
 
+#include "Mech.h"
+#include "World.h"
+
 // Rendering everything as debug colliders so we don't have to "guess" what our physics are doing
 //inline Mesh* ProjectileMesh(ProjectileType type)
 //{
@@ -40,14 +43,6 @@ inline Color ProjectileColor(ProjectileType type)
 	return color;
 }
 
-//void CreateProjectile(Projectile* p)
-//{
-//}
-//
-//void DestroyProjectile(Projectile* p)
-//{
-//}
-
 void UpdateProjectile(Projectile& p)
 {
 	float dt = GetFrameTime();
@@ -84,4 +79,58 @@ void DrawProjectileDebug(const Projectile& p)
 	Vector3 dir = Vector3Normalize(p.vel);
 	DrawLineDebug(p.pos, p.pos + dir * 7.5f, ORANGE, 5.0f);
 	DrawAxesDebug(p.pos, MatrixLookRotation(dir), 10.0f, 2.0f);
+}
+
+void CreateProjectileRifle(Mech& mech, World& world)
+{
+	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
+
+	Projectile p;
+	p.pos = mech.pos + mech_dir * 10.0f;
+	p.vel = mech_dir * 20.0f;
+	p.radius = 2.0f;
+	p.length = 8.0f;
+	p.type = PROJECTILE_RIFLE;
+
+	world.projectiles.push_back(p);
+}
+
+void CreateProjectileShotgun(Mech& mech, World& world)
+{
+	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
+
+	Projectile projectiles[3];
+	for (int i = 0; i < 3; i++)
+	{
+		Projectile& p = projectiles[i];
+		Quaternion spread = QuaternionFromEuler(0.0f, 0.0f, (-30.0f + i * 30.0f) * DEG2RAD);
+		Vector3 dir = Vector3RotateByQuaternion(mech_dir, spread);
+
+		p.pos = mech.pos + mech_dir * 10.0f;
+		p.vel = dir * 15.0f;
+		p.radius = 3.0f;
+		p.length = 6.0f;
+		p.type = PROJECTILE_SHOTGUN;
+
+		world.projectiles.push_back(p);
+	}
+}
+
+void CreateProjectileGrenade(Mech& mech, World& world)
+{
+	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
+	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, 0.0f)));
+
+	Projectile p;
+	p.pos = mech.pos + mech_dir * 10.0f;
+	p.vel = dir * 20.0f;
+	p.radius = 4.0f;
+	p.type = PROJECTILE_GRENADE;
+
+	world.projectiles.push_back(p);
+}
+
+void CreateProjectileMissile(Mech& mech, World& world)
+{
+
 }

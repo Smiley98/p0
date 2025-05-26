@@ -118,6 +118,7 @@
     <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\DebugDraw.cpp" />
+    <ClCompile Include="src\Gear.cpp" />
     <ClCompile Include="src\GearScene.cpp" />
     <ClCompile Include="src\LoadoutSelectScene.cpp" />
     <ClCompile Include="src\MapScene.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="src\ParticleEmitter.h" />
     <ClInclude Include="src\ParticlesScene.h" />
     <ClInclude Include="src\PhysicsScene.h" />
+    <ClInclude Include="src\Gear.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SplashScreenScene.h" />
     <ClInclude Include="src\TeamSelectScene.h" />

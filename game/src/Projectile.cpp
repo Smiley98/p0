@@ -57,8 +57,11 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 	Projectile p;
 	p.pos = mech.pos + mech_dir * 10.0f;
 	p.vel = dir * 20.0f;
-	p.radius = 4.0f;
+	p.radius = 2.0f;
 	p.type = PROJECTILE_GRENADE;
+
+	p.mesh = ProjectileMesh(p.type);
+	p.material = ProjectileMaterial(p.type);
 
 	world.projectiles.push_back(p);
 }
@@ -152,6 +155,7 @@ Mesh* ProjectileMesh(ProjectileType type)
 		break;
 
 	case PROJECTILE_GRENADE:
+		mesh = g_meshes.prj_grenade;
 		break;
 	}
 

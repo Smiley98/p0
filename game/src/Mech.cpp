@@ -196,6 +196,13 @@ void UpdateGear(Mech& mech, World& world, int slot)
     }
     else if (gear.type == GEAR_MISSILE_LAUNCHER)
     {
-
+        GearMissileLauncher& g = gear.missile_launcher;
+        g.launch_cooldown -= dt;
+        if (g.launch_cooldown <= 0.0f && g.missiles > 0)
+        {
+            CreateProjectileMissile(mech, world);
+            g.missiles--;
+            g.launch_cooldown = g.launch_cooldown_max;
+        }
     }
 }

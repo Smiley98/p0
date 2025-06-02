@@ -6,9 +6,10 @@
 #include "Mech.h"
 #include "World.h"
 
-Color ProjectileColor(ProjectileType type);
-Mesh* ProjectileMesh(ProjectileType type);
-Material ProjectileMaterial(ProjectileType type);
+// Just do these inline within factory functions?
+//Color ProjectileColor(ProjectileType type);
+//Mesh* ProjectileMesh(ProjectileType type);
+//Material ProjectileMaterial(ProjectileType type);
 
 void CreateProjectileRifle(Mech& mech, World& world)
 {
@@ -20,8 +21,11 @@ void CreateProjectileRifle(Mech& mech, World& world)
 	p.radius = 1.5f;
 	p.type = PROJECTILE_RIFLE;
 
-	p.mesh = ProjectileMesh(p.type);
-	p.material = ProjectileMaterial(p.type);
+	p.mesh = g_meshes.prj_straight;
+	p.material = LoadMaterialDefault();
+	p.material.maps[MATERIAL_MAP_DIFFUSE].color = RED;
+	//p.mesh = ProjectileMesh(p.type);
+	//p.material = ProjectileMaterial(p.type);
 
 	world.projectiles.push_back(p);
 }
@@ -42,8 +46,11 @@ void CreateProjectileShotgun(Mech& mech, World& world)
 		p.radius = 2.0f;
 		p.type = PROJECTILE_SHOTGUN;
 
-		p.mesh = ProjectileMesh(p.type);
-		p.material = ProjectileMaterial(p.type);
+		p.mesh = g_meshes.prj_straight;
+		p.material = LoadMaterialDefault();
+		p.material.maps[MATERIAL_MAP_DIFFUSE].color = GREEN;
+		//p.mesh = ProjectileMesh(p.type);
+		//p.material = ProjectileMaterial(p.type);
 
 		world.projectiles.push_back(p);
 	}
@@ -60,22 +67,41 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 	p.radius = 2.0f;
 	p.type = PROJECTILE_GRENADE;
 
-	p.mesh = ProjectileMesh(p.type);
-	p.material = ProjectileMaterial(p.type);
+	p.mesh = g_meshes.prj_grenade;
+	p.material = LoadMaterialDefault();
+	p.material.maps[MATERIAL_MAP_DIFFUSE].color = BLUE;
+	//p.mesh = ProjectileMesh(p.type);
+	//p.material = ProjectileMaterial(p.type);
 
 	world.projectiles.push_back(p);
 }
 
 void CreateProjectileMissile(Mech& mech, World& world)
 {
+	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
+	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, 0.0f)));
 
+	Projectile p;
+	p.pos = mech.pos + mech_dir * 10.0f;
+	p.vel = dir * 40.0f;
+	p.radius = 2.0f;
+	p.type = PROJECTILE_MISSILE;
+
+	p.mesh = g_meshes.prj_missile;
+	p.material = LoadMaterialDefault();
+	p.material.maps[MATERIAL_MAP_DIFFUSE].color = GOLD;
+	//p.mesh = ProjectileMesh(p.type);
+	//p.material = ProjectileMaterial(p.type);
+
+	world.projectiles.push_back(p);
 }
 
 void UpdateProjectile(Projectile& p)
 {
 	float dt = GetFrameTime();
 
-	if (p.type == PROJECTILE_GRENADE)
+	if (p.type == PROJECTILE_GRENADE ||
+		p.type == PROJECTILE_MISSILE)
 	{
 		p.vel += Vector3UnitZ * -10.0f * dt;
 	}
@@ -92,27 +118,30 @@ void DrawProjectile(const Projectile& p)
 
 void DrawProjectileDebug(const Projectile& p)
 {
-	Color color = ProjectileColor(p.type);
-	color.a = 196;
+	//Color color = ProjectileColor(p.type);
+	Color color = p.material.maps[MATERIAL_MAP_DIFFUSE].color;
 	Vector3 dir = Vector3Normalize(p.vel);
 	Vector3 top = p.pos + dir * p.length;
 	Vector3 bot = p.pos - dir * p.length;
 
 	// Most projectiles are spheres since they behave like bullets
 	//DrawCapsule(top, bot, p.radius, 4, 4, color);
+	color.a = 196;
 	switch (p.type)
 	{
 	case PROJECTILE_RIFLE:
 	case PROJECTILE_SHOTGUN:
 	case PROJECTILE_GRENADE:
+	case PROJECTILE_MISSILE:
 		DrawSphere(p.pos, p.radius, color);
 		break;
 	}
 
-	DrawLineDebug(p.pos, p.pos + dir * 7.5f, ORANGE, 5.0f);
+	DrawLineDebug(p.pos, p.pos + dir * 20.0f, YELLOW, 4.0f);
 	DrawAxesDebug(p.pos, MatrixLookRotation(dir), 10.0f, 2.0f);
 }
 
+/*
 Color ProjectileColor(ProjectileType type)
 {
 	Color color = BLACK;
@@ -157,6 +186,10 @@ Mesh* ProjectileMesh(ProjectileType type)
 	case PROJECTILE_GRENADE:
 		mesh = g_meshes.prj_grenade;
 		break;
+
+	case PROJECTILE_MISSILE:
+		mesh = g_meshes.prj_missile;
+		break;
 	}
 
 	assert(mesh != nullptr, "Invalid projectile type!");
@@ -169,3 +202,4 @@ Material ProjectileMaterial(ProjectileType type)
 	material.maps[MATERIAL_MAP_DIFFUSE].color = ProjectileColor(type);
 	return material;
 }
+*/

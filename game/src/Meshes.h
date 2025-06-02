@@ -14,6 +14,7 @@ struct Meshes
 
 	Mesh* prj_straight;
 	Mesh* prj_grenade;
+	Mesh* prj_missile;
 
 	// TODO - Load these once world-systems work ;)
 	//Mesh* gear_rifle;

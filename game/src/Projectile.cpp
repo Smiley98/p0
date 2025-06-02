@@ -6,11 +6,6 @@
 #include "Mech.h"
 #include "World.h"
 
-// Just do these inline within factory functions?
-//Color ProjectileColor(ProjectileType type);
-//Mesh* ProjectileMesh(ProjectileType type);
-//Material ProjectileMaterial(ProjectileType type);
-
 void CreateProjectileRifle(Mech& mech, World& world)
 {
 	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
@@ -24,8 +19,6 @@ void CreateProjectileRifle(Mech& mech, World& world)
 	p.mesh = g_meshes.prj_straight;
 	p.material = LoadMaterialDefault();
 	p.material.maps[MATERIAL_MAP_DIFFUSE].color = RED;
-	//p.mesh = ProjectileMesh(p.type);
-	//p.material = ProjectileMaterial(p.type);
 
 	world.projectiles.push_back(p);
 }
@@ -49,8 +42,6 @@ void CreateProjectileShotgun(Mech& mech, World& world)
 		p.mesh = g_meshes.prj_straight;
 		p.material = LoadMaterialDefault();
 		p.material.maps[MATERIAL_MAP_DIFFUSE].color = GREEN;
-		//p.mesh = ProjectileMesh(p.type);
-		//p.material = ProjectileMaterial(p.type);
 
 		world.projectiles.push_back(p);
 	}
@@ -70,8 +61,6 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 	p.mesh = g_meshes.prj_grenade;
 	p.material = LoadMaterialDefault();
 	p.material.maps[MATERIAL_MAP_DIFFUSE].color = BLUE;
-	//p.mesh = ProjectileMesh(p.type);
-	//p.material = ProjectileMaterial(p.type);
 
 	world.projectiles.push_back(p);
 }
@@ -90,8 +79,6 @@ void CreateProjectileMissile(Mech& mech, World& world)
 	p.mesh = g_meshes.prj_missile;
 	p.material = LoadMaterialDefault();
 	p.material.maps[MATERIAL_MAP_DIFFUSE].color = GOLD;
-	//p.mesh = ProjectileMesh(p.type);
-	//p.material = ProjectileMaterial(p.type);
 
 	world.projectiles.push_back(p);
 }
@@ -118,14 +105,11 @@ void DrawProjectile(const Projectile& p)
 
 void DrawProjectileDebug(const Projectile& p)
 {
-	//Color color = ProjectileColor(p.type);
-	Color color = p.material.maps[MATERIAL_MAP_DIFFUSE].color;
 	Vector3 dir = Vector3Normalize(p.vel);
 	Vector3 top = p.pos + dir * p.length;
 	Vector3 bot = p.pos - dir * p.length;
 
-	// Most projectiles are spheres since they behave like bullets
-	//DrawCapsule(top, bot, p.radius, 4, 4, color);
+	Color color = p.material.maps[MATERIAL_MAP_DIFFUSE].color;
 	color.a = 196;
 	switch (p.type)
 	{
@@ -140,66 +124,3 @@ void DrawProjectileDebug(const Projectile& p)
 	DrawLineDebug(p.pos, p.pos + dir * 20.0f, YELLOW, 4.0f);
 	DrawAxesDebug(p.pos, MatrixLookRotation(dir), 10.0f, 2.0f);
 }
-
-/*
-Color ProjectileColor(ProjectileType type)
-{
-	Color color = BLACK;
-	switch (type)
-	{
-	case PROJECTILE_RIFLE:
-		color = RED;
-		break;
-
-	case PROJECTILE_SHOTGUN:
-		color = GREEN;
-		break;
-
-	case PROJECTILE_GRENADE:
-		color = BLUE;
-		break;
-
-	case PROJECTILE_MISSILE:
-		color = GOLD;
-		break;
-
-	case PROJECTILE_TYPE_COUNT:
-		assert(false, "Invalid projectile type");
-		break;
-	}
-	return color;
-}
-
-Mesh* ProjectileMesh(ProjectileType type)
-{
-	Mesh* mesh = nullptr;
-	switch (type)
-	{
-	case PROJECTILE_RIFLE:
-		mesh = g_meshes.prj_straight;
-		break;
-
-	case PROJECTILE_SHOTGUN:
-		mesh = g_meshes.prj_straight;
-		break;
-
-	case PROJECTILE_GRENADE:
-		mesh = g_meshes.prj_grenade;
-		break;
-
-	case PROJECTILE_MISSILE:
-		mesh = g_meshes.prj_missile;
-		break;
-	}
-
-	assert(mesh != nullptr, "Invalid projectile type!");
-	return mesh;
-}
-
-Material ProjectileMaterial(ProjectileType type)
-{
-	Material material = LoadMaterialDefault();
-	material.maps[MATERIAL_MAP_DIFFUSE].color = ProjectileColor(type);
-	return material;
-}
-*/

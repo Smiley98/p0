@@ -10,6 +10,11 @@ struct Building
 
 	Material material;
 	float durability;
+
+	float radius;
+	float length;
+
+	bool collision;
 };
 
 void CreateBuilding(Building* building, BuildingType type);

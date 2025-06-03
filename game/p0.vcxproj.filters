@@ -223,5 +223,8 @@
     <ClInclude Include="src\Gear.h">
       <Filter>World\Gear</Filter>
     </ClInclude>
+    <ClInclude Include="src\Collision3D.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

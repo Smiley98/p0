@@ -1,6 +1,7 @@
 #include "World.h"
 #include "rlgl.h"
 #include "Camera.h"
+#include "Collision3D.h"
 
 constexpr size_t MAX_MECHS = 4;
 constexpr size_t MAX_BUILDINGS = 64;
@@ -154,6 +155,30 @@ void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles)
 
 void UpdateCollisionsProjectileBuilding(Projectiles& projectiles, Buildings& buildings)
 {
+    for (Building& b : buildings)
+        b.collision = false;
+
+    for (size_t i = 0; i < projectiles.size(); i++)
+    {
+        for (size_t j = i + 1; j < buildings.size(); j++)
+        {
+            Projectile& p = projectiles[i];
+            Building& b = buildings[j];
+
+            //BUGFIX: Why does this succeed initially then fail after ~30 projectiles!?
+            bool collision = SphereCapsule(p.pos, p.radius, b.pos + Vector3UnitZ * b.length * 0.5f, Vector3UnitZ, b.radius, b.length * 0.5f - b.radius);
+            if (collision)
+            {
+                TraceLog(LOG_INFO, "Collision");
+            }
+            b.collision |= collision;
+        }
+    }
+
+    if (IsKeyPressed(KEY_P))
+    {
+        TraceLog(LOG_INFO, "Projectile count: %i", projectiles.size());
+    }
 }
 
 void DrawGrid()

@@ -13,7 +13,6 @@ RMAPI float Sign(float value)
     return result;
 }
 
-// Overlap along a single axis
 RMAPI bool Overlaps(float min1, float max1, float min2, float max2)
 {
     return !((max1 < min2) || (max2 < min1));
@@ -52,11 +51,17 @@ RMAPI Vector2 Vector2RotateTowards(Vector2 from, Vector2 to, float maxRadiansDel
     return result;
 }
 
-// Projects point P onto line AB
 RMAPI Vector2 Vector2ProjectPointLine(Vector2 A, Vector2 B, Vector2 P)
 {
     Vector2 AB = (B - A);
     float t = Vector2DotProduct((P - A), AB) / Vector2DotProduct(AB, AB);
+    return A + (AB * Clamp(t, 0.0f, 1.0f));
+}
+
+RMAPI Vector3 Vector3ProjectPointLine(Vector3 A, Vector3 B, Vector3 P)
+{
+    Vector3 AB = (B - A);
+    float t = Vector3DotProduct((P - A), AB) / Vector3DotProduct(AB, AB);
     return A + (AB * Clamp(t, 0.0f, 1.0f));
 }
 
@@ -120,26 +125,3 @@ RMAPI Vector3 MatrixColZ(Matrix m)
     Vector3 result = { m.m8, m.m9, m.m10 };
     return result;
 }
-
-// Since p0 is y-forward, the following textbook way of constructing a rotation matrix produces unintended results:
-//RMAPI Matrix MatrixLookRotation(Vector3 forward, Vector3 up)
-//{
-//    Matrix mat = MatrixIdentity();
-//
-//    Vector3 right = Vector3Normalize(Vector3CrossProduct(up, forward));
-//    up = Vector3Normalize(Vector3CrossProduct(forward, right));
-//
-//    mat.m0 = right.x;
-//    mat.m1 = right.y;
-//    mat.m2 = right.z;
-//
-//    mat.m4 = up.x;
-//    mat.m5 = up.y;
-//    mat.m6 = up.z;
-//
-//    mat.m8 = forward.x;
-//    mat.m9 = forward.y;
-//    mat.m10 = forward.z;
-//
-//    return mat;
-//}

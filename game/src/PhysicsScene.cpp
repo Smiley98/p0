@@ -5,8 +5,12 @@
 
 static Vector3 p0 = Vector3UnitX * -10.0f;
 static Vector3 p1 = Vector3UnitX *  10.0f;
+static Vector3 p2 = Vector3UnitX * 10.0f;
 static float radius = 5.0f;
 static bool collision = false;
+static float width = 5.0f;
+static float height = 5.0f;
+static float length = 5.0f;
 static Camera camera;
 
 void PhysicsScene::OnLoad()
@@ -34,11 +38,15 @@ void PhysicsScene::OnStop()
 
 void PhysicsScene::OnUpdate()
 {
-	p0 = Vector3UnitX * sinf(GetTime()) * 10.0f;
-	p1 = Vector3UnitX * cosf(GetTime()) * 10.0f;
+	p0 = Vector3UnitY * sinf(GetTime()) * 20.0f;
+	p1 = Vector3UnitY * cosf(GetTime()) * 20.0f;
+	p2 = { p1.x, p1.y + 5.0f, p1.z };
 	Vector3 v0{ p0.x, p0.y , p0.z};
 	Vector3 v1{ p1.x, p1.y , p0.z};
-	collision = SphereSphere(v0, radius, v1, radius);
+	//Vector3 extents{ length / 2, width / 2, height / 2};
+	//collision = SphereBox(v0, radius, v1, extents);
+
+	collision = SphereCapsule(v0, radius, v1, Vector3Zero(), radius, p2.y - p1.y);
 }
 
 void PhysicsScene::OnDraw()
@@ -46,7 +54,8 @@ void PhysicsScene::OnDraw()
 	Color color = collision ? RED : GREEN;
 	BeginMode3D(camera);
 	DrawSphere(p0, radius, color);
-	DrawSphere(p1, radius, color);
+	//DrawCube(p1, width, height, length, color);
+	DrawCapsule(p1, p2, radius, 6, 6, color);
 	EndMode3D();
 }
 

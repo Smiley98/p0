@@ -141,43 +141,41 @@ void UpdateCollisions(World& world)
 	UpdateCollisionsProjectileBuilding(world.projectiles, world.buildings);
 }
 
+// TODO - Make a test scene where entity budget is maxed out and test performance
 void UpdateCollisionsMechMech(Mechs& mechs)
 {
+
 }
 
 void UpdateCollisionsMechBuilding(Mechs& mechs, Buildings& buildings)
 {
+
 }
 
 void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles)
 {
+
 }
 
 void UpdateCollisionsProjectileBuilding(Projectiles& projectiles, Buildings& buildings)
 {
+    // Note: rendering is the performance bottleneck
+    // Build in Release and disable debug rendering for accurate test (run without debugger)
     for (Building& b : buildings)
         b.collision = false;
 
-    for (size_t i = 0; i < projectiles.size(); i++)
+    for (Projectile& p : projectiles)
     {
-        for (size_t j = i + 1; j < buildings.size(); j++)
+        for (Building& b : buildings)
         {
-            Projectile& p = projectiles[i];
-            Building& b = buildings[j];
-
-            //BUGFIX: Why does this succeed initially then fail after ~30 projectiles!?
             bool collision = SphereCapsule(p.pos, p.radius, b.pos + Vector3UnitZ * b.length * 0.5f, Vector3UnitZ, b.radius, b.length * 0.5f - b.radius);
-            if (collision)
-            {
-                TraceLog(LOG_INFO, "Collision");
-            }
             b.collision |= collision;
         }
     }
 
     if (IsKeyPressed(KEY_P))
     {
-        TraceLog(LOG_INFO, "Projectile count: %i", projectiles.size());
+        TraceLog(LOG_INFO, "Count: %i", projectiles.size());
     }
 }
 

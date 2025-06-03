@@ -56,7 +56,7 @@ void UpdateBuilding(Building& building)
 
 void DrawBuilding(const Building& building)
 {
-    //DrawMesh(*BuildingMesh(building.type), building.material, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
+    DrawMesh(*BuildingMesh(building.type), building.material, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
 }
 
 void DrawBuildingDebug(const Building& building)
@@ -73,5 +73,5 @@ void DrawBuildingDebug(const Building& building)
     //DrawCapsule(bot, top, building.radius, 8, 4, cc);
     //DrawSphere(top, building.radius, cs);
     //DrawSphere(bot, building.radius, cs);
-    DrawCapsule(bot, top, building.radius, 8, 4, building.collision ? RED : GREEN);
+    //DrawCapsule(bot, top, building.radius, 8, 4, building.collision ? RED : GREEN);
 }

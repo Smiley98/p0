@@ -1,6 +1,7 @@
 #include "World.h"
 #include "rlgl.h"
 #include "Camera.h"
+#include "Collision3D.h"
 
 constexpr size_t MAX_MECHS = 4;
 constexpr size_t MAX_BUILDINGS = 64;
@@ -52,10 +53,13 @@ void UpdateWorld(World& world)
 	UpdateCollisions(world);
 
     for (Mech& mech : world.mechs)
-        UpdateMech(mech);
+        UpdateMech(mech, world);
 
     for (Building& building : world.buildings)
         UpdateBuilding(building);
+
+    for (Projectile& projectile : world.projectiles)
+        UpdateProjectile(projectile);
 }
 
 void DrawWorld(const World& world)
@@ -72,8 +76,16 @@ void DrawWorldDebug(const World& world)
 {
     // TODO - 2D vs 3D debug draw for lines vs text
     BeginMode3D(*GetCamera());
+
     for (const Mech& mech : world.mechs)
         DrawMechDebug(mech);
+
+    for (const Building& building : world.buildings)
+        DrawBuildingDebug(building);
+
+    for (const Projectile& projectile : world.projectiles)
+        DrawProjectileDebug(projectile);
+
     EndMode3D();
 }
 
@@ -129,20 +141,42 @@ void UpdateCollisions(World& world)
 	UpdateCollisionsProjectileBuilding(world.projectiles, world.buildings);
 }
 
+// TODO - Make a test scene where entity budget is maxed out and test performance
 void UpdateCollisionsMechMech(Mechs& mechs)
 {
+
 }
 
 void UpdateCollisionsMechBuilding(Mechs& mechs, Buildings& buildings)
 {
+
 }
 
 void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles)
 {
+
 }
 
 void UpdateCollisionsProjectileBuilding(Projectiles& projectiles, Buildings& buildings)
 {
+    // Note: rendering is the performance bottleneck
+    // Build in Release and disable debug rendering for accurate test (run without debugger)
+    for (Building& b : buildings)
+        b.collision = false;
+
+    for (Projectile& p : projectiles)
+    {
+        for (Building& b : buildings)
+        {
+            bool collision = SphereCapsule(p.pos, p.radius, b.pos + Vector3UnitZ * b.length * 0.5f, Vector3UnitZ, b.radius, b.length * 0.5f - b.radius);
+            b.collision |= collision;
+        }
+    }
+
+    if (IsKeyPressed(KEY_P))
+    {
+        TraceLog(LOG_INFO, "Count: %i", projectiles.size());
+    }
 }
 
 void DrawGrid()
@@ -168,14 +202,16 @@ void DrawMechs(const Mechs& mechs)
 
 void DrawBuildings(const Buildings& buildings)
 {
-    rlEnableWireMode();
+    //rlEnableWireMode();
     for (const Building& building : buildings)
         DrawBuilding(building);
-    rlDisableWireMode();
+    //rlDisableWireMode();
 }
 
 void DrawProjectiles(const Projectiles& projectiles)
 {
+    for (const Projectile& projectile : projectiles)
+        DrawProjectile(projectile);
 }
 
 // Collision cases:

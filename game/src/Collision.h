@@ -1,7 +1,6 @@
 #pragma once
 #include "raymath.h"
 // All formulas for circle, capsule, AABB, and infinite plane collision!
-// No need to add lines or polygons. SAT is overkill for this game.
 
 // Outputs nearest two points along line top1_bot1 and line top2_bot2
 RMAPI void NearestLinePoints(

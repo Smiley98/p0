@@ -10,6 +10,11 @@ struct Building
 
 	Material material;
 	float durability;
+
+	float radius;
+	float length;
+
+	bool collision;
 };
 
 void CreateBuilding(Building* building, BuildingType type);
@@ -17,3 +22,4 @@ void DestroyBuilding(Building* building);
 
 void UpdateBuilding(Building& building);
 void DrawBuilding(const Building& building);
+void DrawBuildingDebug(const Building& building);

@@ -19,19 +19,7 @@ RMAPI bool SphereSphere(
 
     if (collision && mtv != nullptr)
     {
-        Vector3 delta = pos1 - pos2;
-        float distSqr = Vector3LengthSqr(delta);
-
-        if (distSqr > 0.000001f)  // avoid divide by zero or NaN
-        {
-            *mtv = Vector3Normalize(delta) * (rad - sqrtf(distSqr));
-        }
-        else
-        {
-            // Default push direction — arbitrary or based on object ID or random
-            *mtv = { rad, 0.0f, 0.0f };
-        }
-
+        *mtv = Vector3Normalize(pos1 - pos2) * (rad - Vector3Distance(pos1, pos2));
     }
     return collision;
 }

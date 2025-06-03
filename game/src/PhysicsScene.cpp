@@ -46,6 +46,9 @@ void PhysicsScene::OnUpdate()
 	//Vector3 extents{ length / 2, width / 2, height / 2};
 	//collision = SphereBox(v0, radius, v1, extents);
 
+	// Note: Fix the capsule in-place, and control sphere with mouse to make test easier
+	// Investigate ScreenToWorld conversion (raylib.h line 1061), otherwise just control both objects with keyboard if it doesn't work
+	// See World.cpp line 160 for sphere-capsule example of projectile-building collisions
 	collision = SphereCapsule(v0, radius, v1, Vector3Zero(), radius, p2.y - p1.y);
 }
 

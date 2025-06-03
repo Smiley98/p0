@@ -52,6 +52,9 @@
     <Filter Include="Widgets">
       <UniqueIdentifier>{e6188651-b1cd-4145-a914-27213dd5abbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="World\Gear">
+      <UniqueIdentifier>{04ee020d-434f-4333-8b78-12e15033a19a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Shaders.cpp">
@@ -123,6 +126,9 @@
     </ClCompile>
     <ClCompile Include="src\Widgets.cpp">
       <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Gear.cpp">
+      <Filter>World\Gear</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +219,9 @@
     </ClInclude>
     <ClInclude Include="src\Widgets.h">
       <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Gear.h">
+      <Filter>World\Gear</Filter>
     </ClInclude>
     <ClInclude Include="src\Collision3D.h">
       <Filter>Math</Filter>

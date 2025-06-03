@@ -1,0 +1,87 @@
+#pragma once
+#include "Gear.h"
+#include "Types.h"
+
+struct GearRifle
+{
+
+};
+
+struct GearShotgun
+{
+
+};
+
+struct GearGrenadeLauncher
+{
+	int grenades;
+	float launch_cooldown;
+	float launch_cooldown_max;
+};
+
+struct GearMissileLauncher
+{
+	int missiles;
+	float launch_cooldown;
+	float launch_cooldown_max;
+};
+
+struct Gear
+{
+	GearType type = GEAR_TYPE_COUNT;
+
+	float cooldown;
+	float cooldown_max;
+	float heat;
+	// TODO - Make heat system
+
+	union
+	{
+		GearRifle rifle;
+		GearShotgun shotgun;
+		GearGrenadeLauncher grenade_launcher;
+		GearMissileLauncher missile_launcher;
+	};
+};
+
+inline Gear CreateGearRifle()
+{
+	Gear g;
+	g.type = GEAR_RIFLE;
+	g.cooldown = g.cooldown_max = 1.0f;
+	g.heat = 20; 
+	return g;
+}
+
+inline Gear CreateGearShotgun()
+{
+	Gear g;
+	g.type = GEAR_SHOTGUN;
+	g.cooldown = g.cooldown_max = 0.75f;
+	g.heat = 20;
+	return g;
+}
+
+inline Gear CreateGearGrenadeLauncher()
+{
+	Gear g;
+	g.type = GEAR_GRENADE_LAUNCHER;
+	g.cooldown = g.cooldown_max = 2.0f;
+	g.heat = 40;
+	g.grenade_launcher.grenades = 0;
+	g.grenade_launcher.launch_cooldown = 0.2f;
+	g.grenade_launcher.launch_cooldown_max = 0.2f;
+	return g;
+}
+
+inline Gear CreateGearMissileLauncher()
+{
+	Gear g;
+	g.type = GEAR_MISSILE_LAUNCHER;
+	g.cooldown = g.cooldown_max = 1.5f;
+	g.heat = 30;
+	g.missile_launcher.missiles = 0;
+	g.missile_launcher.launch_cooldown = 0.1f;
+	g.missile_launcher.launch_cooldown_max = 0.1f;
+	return g;
+}

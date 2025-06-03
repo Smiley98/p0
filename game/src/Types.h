@@ -1,15 +1,29 @@
 #pragma once
+#include <cstdint>
 
-enum BuildingType
+enum BuildingType : uint32_t
 {
 	BUILDING_TD,
 	BUILDING_TYPE_COUNT
 };
 
-enum ProjectileType
+enum ProjectileType : uint32_t
 {
 	PROJECTILE_RIFLE,
 	PROJECTILE_SHOTGUN,
 	PROJECTILE_GRENADE,
+	PROJECTILE_MISSILE,
 	PROJECTILE_TYPE_COUNT
 };
+
+enum GearType : uint32_t
+{
+	GEAR_RIFLE,
+	GEAR_SHOTGUN,
+	GEAR_GRENADE_LAUNCHER,
+	GEAR_MISSILE_LAUNCHER,
+	GEAR_TYPE_COUNT
+};
+
+// Decouple gear from projectiles
+// ie Grenade Launcher spawns 4 grenades

@@ -5,6 +5,7 @@
 
 #include "Mech.h"
 #include "World.h"
+#include "Audio.h"
 
 void DestroyProjectile(Projectile* p)
 {
@@ -19,7 +20,7 @@ void CreateProjectileRifle(Mech& mech, World& world)
 
 	Projectile p;
 	p.pos = mech.pos + mech_dir * 10.0f;
-	p.vel = mech_dir * 20.0f;
+	p.vel = mech_dir * 75.0f;
 	p.radius = 1.5f;
 	p.type = PROJECTILE_RIFLE;
 
@@ -28,6 +29,7 @@ void CreateProjectileRifle(Mech& mech, World& world)
 	p.material.maps[MATERIAL_MAP_DIFFUSE].color = RED;
 
 	world.projectiles.push_back(p);
+	PlaySound(g_audio.fire_rifle);
 }
 
 void CreateProjectileShotgun(Mech& mech, World& world)
@@ -42,7 +44,7 @@ void CreateProjectileShotgun(Mech& mech, World& world)
 		Vector3 dir = Vector3RotateByQuaternion(mech_dir, spread);
 
 		p.pos = mech.pos + mech_dir * 10.0f;
-		p.vel = dir * 15.0f;
+		p.vel = dir * 60.0f;
 		p.radius = 2.0f;
 		p.type = PROJECTILE_SHOTGUN;
 
@@ -52,6 +54,7 @@ void CreateProjectileShotgun(Mech& mech, World& world)
 
 		world.projectiles.push_back(p);
 	}
+	PlaySound(g_audio.fire_shotgun);
 }
 
 void CreateProjectileGrenade(Mech& mech, World& world)
@@ -74,6 +77,7 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 	p.material.maps[MATERIAL_MAP_DIFFUSE].color = BLUE;
 
 	world.projectiles.push_back(p);
+	PlaySound(g_audio.fire_grenade);
 }
 
 void CreateProjectileMissile(Mech& mech, World& world, float roll)
@@ -126,7 +130,7 @@ void DrawProjectileDebug(const Projectile& p)
 		break;
 	}
 
-	DrawLineDebug(p.pos, p.pos + dir * 20.0f, YELLOW, 4.0f);
+	//DrawLineDebug(p.pos, p.pos + dir * 20.0f, YELLOW, 4.0f);
 	DrawAxesDebug(p.pos, MatrixLookRotation(dir), 10.0f, 2.0f);
 }
 

@@ -6,12 +6,12 @@ struct Building
 	BuildingType type = BUILDING_TYPE_COUNT;
 	Vector3 pos = Vector3Zeros;
 
-	float radius;
-	float length;
+	float radius = 0.0f;
+	float length = 0.0f;
 
 	Material material;
-	float durability;
-	float death_timer;
+	float durability = 0.0f;
+	float death_timer = 0.0f;
 
 	bool destroy = false;
 

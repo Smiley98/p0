@@ -55,6 +55,9 @@
     <Filter Include="World\Gear">
       <UniqueIdentifier>{04ee020d-434f-4333-8b78-12e15033a19a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Audio">
+      <UniqueIdentifier>{cfccf131-6bb1-4f18-829d-9ae644d44b07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Shaders.cpp">
@@ -129,6 +132,9 @@
     </ClCompile>
     <ClCompile Include="src\Gear.cpp">
       <Filter>World\Gear</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Audio.cpp">
+      <Filter>Assets\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -228,6 +234,9 @@
     </ClInclude>
     <ClInclude Include="src\WorldDef.h">
       <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio.h">
+      <Filter>Assets\Audio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,14 +5,14 @@ struct Projectile
 {
 	ProjectileType type = PROJECTILE_TYPE_COUNT;
 
-	Vector3 pos;
-	Vector3 vel;
+	Vector3 pos = Vector3Zeros;
+	Vector3 vel = Vector3Zeros;
 
-	float radius;
-	float length;
+	float radius = 0.0f;
+	float length = 0.0f;
 
 	Material material;
-	Mesh* mesh;
+	Mesh* mesh = nullptr;
 
 	float gravity_scale = 0.0f;
 	float restitution = 0.0f;

@@ -8,6 +8,8 @@
 
 #include <vector>
 
+constexpr Vector3 GRAVITY = { 0.0f, 0.0f, -9.81f };
+
 using Mechs = std::vector<Mech>;
 using Buildings = std::vector<Building>;
 using Projectiles = std::vector<Projectile>;

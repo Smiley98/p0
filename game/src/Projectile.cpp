@@ -56,14 +56,18 @@ void CreateProjectileShotgun(Mech& mech, World& world)
 
 void CreateProjectileGrenade(Mech& mech, World& world)
 {
+	float pitch = (60.0f + Random(-15.0f, 15.0f)) * DEG2RAD;
+	float roll = Random(-40.0f, 40.0f) * DEG2RAD;
 	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
-	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, 0.0f)));
+	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(pitch, 0.0f, roll)));
 
 	Projectile p;
 	p.pos = mech.pos + mech_dir * 10.0f;
-	p.vel = dir * 20.0f;
+	p.vel = dir * 30.0f;
 	p.radius = 2.0f;
 	p.type = PROJECTILE_GRENADE;
+
+	p.gravity_scale = 4.0f;
 
 	p.mesh = g_meshes.prj_grenade;
 	p.material = LoadMaterialDefault();
@@ -72,10 +76,10 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 	world.projectiles.push_back(p);
 }
 
-void CreateProjectileMissile(Mech& mech, World& world)
+void CreateProjectileMissile(Mech& mech, World& world, float roll)
 {
 	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
-	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, 0.0f)));
+	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, roll)));
 
 	Projectile p;
 	p.pos = mech.pos + mech_dir * 10.0f;
@@ -93,13 +97,7 @@ void CreateProjectileMissile(Mech& mech, World& world)
 void UpdateProjectile(Projectile& p)
 {
 	float dt = GetFrameTime();
-
-	if (p.type == PROJECTILE_GRENADE ||
-		p.type == PROJECTILE_MISSILE)
-	{
-		p.vel += Vector3UnitZ * -10.0f * dt;
-	}
-
+	p.vel += GRAVITY * p.gravity_scale * dt;
 	p.pos += p.vel * dt;
 }
 
@@ -131,3 +129,10 @@ void DrawProjectileDebug(const Projectile& p)
 	DrawLineDebug(p.pos, p.pos + dir * 20.0f, YELLOW, 4.0f);
 	DrawAxesDebug(p.pos, MatrixLookRotation(dir), 10.0f, 2.0f);
 }
+
+// The original's projectiles don't take mech velocity into account when firing
+// Might be better to take mech velocity into account!
+// Will lead to better dodger combos, or even harpoon teammate + grenade for crazy velocity!
+// Easiest to not implement for now so we don't have to correct vel.z
+//float t = fmaxf(0.0f, Vector3DotProduct(mech_dir, Vector3Normalize(mech.vel)));
+//float speed = Lerp(10.0f, 20.0f, t);

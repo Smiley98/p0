@@ -24,6 +24,7 @@ struct GearMissileLauncher
 	int missiles;
 	float launch_cooldown;
 	float launch_cooldown_max;
+	float launch_roll;
 };
 
 struct Gear
@@ -48,7 +49,8 @@ inline Gear CreateGearRifle()
 {
 	Gear g;
 	g.type = GEAR_RIFLE;
-	g.cooldown = g.cooldown_max = 1.0f;
+	g.cooldown_max = 1.0f;
+	g.cooldown = 0.0f;
 	g.heat = 20; 
 	return g;
 }
@@ -57,7 +59,8 @@ inline Gear CreateGearShotgun()
 {
 	Gear g;
 	g.type = GEAR_SHOTGUN;
-	g.cooldown = g.cooldown_max = 0.75f;
+	g.cooldown_max = 0.75f;
+	g.cooldown = 0.0f;
 	g.heat = 20;
 	return g;
 }
@@ -66,11 +69,13 @@ inline Gear CreateGearGrenadeLauncher()
 {
 	Gear g;
 	g.type = GEAR_GRENADE_LAUNCHER;
-	g.cooldown = g.cooldown_max = 2.0f;
+	g.cooldown_max = 2.0f;
+	g.cooldown = 0.0f;
 	g.heat = 40;
+
 	g.grenade_launcher.grenades = 0;
-	g.grenade_launcher.launch_cooldown = 0.2f;
-	g.grenade_launcher.launch_cooldown_max = 0.2f;
+	g.grenade_launcher.launch_cooldown_max = 0.1f;
+	g.grenade_launcher.launch_cooldown = 0.0f;
 	return g;
 }
 
@@ -80,8 +85,9 @@ inline Gear CreateGearMissileLauncher()
 	g.type = GEAR_MISSILE_LAUNCHER;
 	g.cooldown = g.cooldown_max = 1.5f;
 	g.heat = 30;
+
 	g.missile_launcher.missiles = 0;
-	g.missile_launcher.launch_cooldown = 0.1f;
-	g.missile_launcher.launch_cooldown_max = 0.1f;
+	g.missile_launcher.launch_cooldown_max = 0.05f;
+	g.missile_launcher.launch_cooldown = 0.0f;
 	return g;
 }

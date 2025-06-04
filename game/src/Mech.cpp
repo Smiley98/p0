@@ -164,11 +164,12 @@ void FireGear(Mech& mech, World& world, int slot)
             break;
 
         case GEAR_GRENADE_LAUNCHER:
-            gear.grenade_launcher.grenades = 4;
+            gear.grenade_launcher.grenades = 6;
             break;
 
         case GEAR_MISSILE_LAUNCHER:
             gear.missile_launcher.missiles = 3;
+            gear.missile_launcher.launch_roll = 20.0f * DEG2RAD;
             break;
 
         case GEAR_TYPE_COUNT:
@@ -190,10 +191,10 @@ void UpdateGear(Mech& mech, World& world, int slot)
         GearGrenadeLauncher& g = gear.grenade_launcher;
         g.launch_cooldown -= dt;
         if (g.launch_cooldown <= 0.0f && g.grenades > 0)
-        {           
+        {
             CreateProjectileGrenade(mech, world);
-            g.grenades--;
             g.launch_cooldown = g.launch_cooldown_max;
+            g.grenades--;
         }
     }
     else if (gear.type == GEAR_MISSILE_LAUNCHER)
@@ -202,9 +203,10 @@ void UpdateGear(Mech& mech, World& world, int slot)
         g.launch_cooldown -= dt;
         if (g.launch_cooldown <= 0.0f && g.missiles > 0)
         {
-            CreateProjectileMissile(mech, world);
-            g.missiles--;
+            CreateProjectileMissile(mech, world, g.launch_roll);
+            g.launch_roll -= 20.0f * DEG2RAD; // 20, 0, -20 
             g.launch_cooldown = g.launch_cooldown_max;
+            g.missiles--;
         }
     }
 }

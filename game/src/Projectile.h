@@ -14,6 +14,8 @@ struct Projectile
 	Material material;
 	Mesh* mesh;
 
+	float gravity_scale = 0.0f;
+	float restitution = 0.0f;
 	bool destroy = false;
 
 	OnCollisionMechProjectile on_collision_mech = nullptr;
@@ -33,8 +35,6 @@ struct Projectile
 
 		struct
 		{
-			float gravity_scale;
-			float restitution; // <-- bouncing grenade!?!?
 		} grenade;
 
 		struct
@@ -50,7 +50,7 @@ void DestroyProjectile(Projectile* p);
 void CreateProjectileRifle(Mech& mech, World& world);
 void CreateProjectileShotgun(Mech& mech, World& world);
 void CreateProjectileGrenade(Mech& mech, World& world);
-void CreateProjectileMissile(Mech& mech, World& world);
+void CreateProjectileMissile(Mech& mech, World& world, float roll);
 
 void UpdateProjectile(Projectile& p);
 void DrawProjectile(const Projectile& p);

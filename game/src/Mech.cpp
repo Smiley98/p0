@@ -1,9 +1,9 @@
 #include "Mech.h"
 #include "DebugDraw.h"
 #include "Meshes.h"
+#include "Camera.h"
 
 #include "World.h"
-#include "Projectile.h"
 #include <cassert>
 
 void UpdateInputMove(Mech& mech);
@@ -33,6 +33,13 @@ void CreateMech(Mech* mech, int player)
     mech->gear[1] = CreateGearShotgun();
     mech->gear[2] = CreateGearGrenadeLauncher();
     mech->gear[3] = CreateGearMissileLauncher();
+
+    ParticleEmitter& pe = mech->trail;
+    pe.lifetime = 2.0f;
+    pe.speed = 10.0f;
+    pe.size = 2.0f;
+    pe.shape_type = PARTICLE_SHAPE_SPHERE;
+    pe.shape.sphere.radius = 5.0f;
 }
 
 void DestroyMech(Mech* mech)
@@ -58,6 +65,11 @@ void UpdateMech(Mech& mech, World& world)
     float dt = GetFrameTime();
     mech.vel *= powf(mech.drag, dt);
     mech.pos += mech.vel * dt;
+
+    ParticleEmitter& pe = mech.trail;
+    pe.position = mech.pos;
+    pe.direction = TorsoDirection(mech) * -1.0f;
+    UpdateParticleEmitter(pe);
 }
 
 void DrawMech(const Mech& mech)
@@ -72,6 +84,7 @@ void DrawMech(const Mech& mech)
 
     DrawMesh(*g_meshes.mech_torso, mech.material, torso_world);
     DrawMesh(*g_meshes.mech_legs, mech.material, legs_world);
+    DrawParticleEmitter(mech.trail, *GetCamera());
 }
 
 void DrawMechDebug(const Mech& mech)

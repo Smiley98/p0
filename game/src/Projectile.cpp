@@ -61,16 +61,14 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 {
 	float pitch = (60.0f + Random(-15.0f, 15.0f)) * DEG2RAD;
 	float roll = Random(-40.0f, 40.0f) * DEG2RAD;
-	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
 	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(pitch, 0.0f, roll)));
 
 	Projectile p;
-	p.pos = mech.pos + mech_dir * 10.0f;
+	p.pos = mech.pos + TorsoDirection(mech) * 10.0f;
 	p.vel = dir * 30.0f;
 	p.radius = 2.0f;
-	p.type = PROJECTILE_GRENADE;
-
 	p.gravity_scale = 4.0f;
+	p.type = PROJECTILE_GRENADE;
 
 	p.mesh = g_meshes.prj_grenade;
 	p.material = LoadMaterialDefault();
@@ -82,11 +80,10 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 
 void CreateProjectileMissile(Mech& mech, World& world, float roll)
 {
-	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
 	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, roll)));
 
 	Projectile p;
-	p.pos = mech.pos + mech_dir * 10.0f;
+	p.pos = mech.pos + TorsoDirection(mech) * 10.0f;
 	p.vel = dir * 40.0f;
 	p.radius = 2.0f;
 	p.type = PROJECTILE_MISSILE;

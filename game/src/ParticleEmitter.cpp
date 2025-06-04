@@ -45,12 +45,11 @@ Particle CreateParticle(const ParticleEmitter& emitter)
 
 void UpdateParticleEmitter(ParticleEmitter& emitter)
 {
-    {
-        auto start = std::remove_if(emitter.particles.begin(), emitter.particles.end(),
-            [](const Particle& p) { return p.life <= 0.0f; });
-
-        emitter.particles.erase(start, emitter.particles.end());
-    }
+    emitter.particles.erase
+    (
+        std::remove_if(emitter.particles.begin(), emitter.particles.end(), [](const Particle& p) { return p.life <= 0.0f; }),
+        emitter.particles.end()
+    );
     
     float dt = GetFrameTime();
     for (Particle& p : emitter.particles)

@@ -1,6 +1,7 @@
 #pragma once
 #include "WorldDef.h"
 #include "Gear.h"
+#include "ParticleEmitter.h"
 
 struct Mech
 {
@@ -28,6 +29,8 @@ struct Mech
 
     Gear gear[4];
 
+    ParticleEmitter trail;
+
 #ifdef DEBUG
     bool debug_collion = false;
 #endif
@@ -40,3 +43,8 @@ void UpdateMech(Mech& mech, World& world);
 
 void DrawMech(const Mech& mech);
 void DrawMechDebug(const Mech& mech);
+
+inline Vector3 TorsoDirection(const Mech& mech)
+{
+    return Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
+}

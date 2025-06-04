@@ -6,6 +6,13 @@
 #include "Mech.h"
 #include "World.h"
 
+void DestroyProjectile(Projectile* p)
+{
+	p->mesh = nullptr;
+	p->type = PROJECTILE_TYPE_COUNT;
+	UnloadMaterial(p->material);
+}
+
 void CreateProjectileRifle(Mech& mech, World& world)
 {
 	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
@@ -108,9 +115,9 @@ void DrawProjectileDebug(const Projectile& p)
 	Vector3 dir = Vector3Normalize(p.vel);
 	Vector3 top = p.pos + dir * p.length;
 	Vector3 bot = p.pos - dir * p.length;
+	Color color = p.debug_collion ? VIOLET : p.material.maps[MATERIAL_MAP_DIFFUSE].color;
+	color.a = 128;
 
-	Color color = p.material.maps[MATERIAL_MAP_DIFFUSE].color;
-	color.a = 196;
 	switch (p.type)
 	{
 	case PROJECTILE_RIFLE:

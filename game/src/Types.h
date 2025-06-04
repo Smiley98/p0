@@ -24,6 +24,3 @@ enum GearType : uint32_t
 	GEAR_MISSILE_LAUNCHER,
 	GEAR_TYPE_COUNT
 };
-
-// Decouple gear from projectiles
-// ie Grenade Launcher spawns 4 grenades

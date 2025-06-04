@@ -179,6 +179,7 @@
     <ClInclude Include="src\Projectile.h" />
     <ClInclude Include="src\raymathext.h" />
     <ClInclude Include="src\Shaders.h" />
+    <ClInclude Include="src\WorldDef.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -12,7 +12,7 @@ inline Color BuildingColor(const Building& building)
 {
     Color src = LIGHTGRAY;
     Color dst = DARKGRAY;
-    float t = building.durability / BuildingDurability(building.type);
+    float t = 1.0f - (building.durability / BuildingDurability(building.type));
     return ColorLerp(src, dst, t);
 }
 
@@ -38,7 +38,7 @@ void CreateBuilding(Building* building, BuildingType type)
     building->material = LoadMaterialDefault();
     building->radius = 5.0f;
     building->length = 50.0f;
-    building->collision = false;
+    building->death_timer = 2.0f;
 }
 
 void DestroyBuilding(Building* building)
@@ -50,8 +50,16 @@ void DestroyBuilding(Building* building)
 void UpdateBuilding(Building& building)
 {
     Color color = BuildingColor(building);
-    color.a = 128;
     building.material.maps[MATERIAL_MAP_DIFFUSE].color = color;
+
+    float dt = GetFrameTime();
+    if (building.durability <= 0.0f)
+    {
+        building.death_timer -= dt;
+        building.pos.z -= 10.0f * dt;
+    }
+
+    building.destroy = building.death_timer <= 0.0f;
 }
 
 void DrawBuilding(const Building& building)
@@ -63,15 +71,12 @@ void DrawBuildingDebug(const Building& building)
 {
     Vector3 bot = building.pos;
     Vector3 top = building.pos + Vector3UnitZ * (building.length - building.radius);
-    // Game building colliders will have bot at pos so mech doesn't rebound downwards
-    // (cylinder shape instead of dome shape)
+    Color color = building.debug_collion ? RED : building.material.maps[MATERIAL_MAP_DIFFUSE].color;
+    color.a = 128;
+    //DrawCapsule(bot, top, building.radius, 8, 4, color);
 
-    //Color cc = PURPLE;
-    //Color cs = PINK;
-    //cc.a = 128;
-    //cs.a = 128;
-    //DrawCapsule(bot, top, building.radius, 8, 4, cc);
-    //DrawSphere(top, building.radius, cs);
-    //DrawSphere(bot, building.radius, cs);
-    DrawCapsule(bot, top, building.radius, 8, 4, building.collision ? RED : GREEN);
+    // top & bot spheres vs capsule test
+    //DrawCapsule(bot, top, building.radius, 8, 4, { 200, 122, 255, 128 });
+    //DrawSphere(top, building.radius, { 0, 82, 172, 128 });
+    //DrawSphere(bot, building.radius, { 0, 82, 172, 128 });
 }

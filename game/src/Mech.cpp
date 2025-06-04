@@ -77,6 +77,8 @@ void DrawMech(const Mech& mech)
 void DrawMechDebug(const Mech& mech)
 {
     DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
+    Color color = mech.debug_collion ? SKYBLUE : mech.material.maps[MATERIAL_MAP_DIFFUSE].color;
+    color.a = 128;
 }
 
 void UpdateInputAim(Mech& mech)

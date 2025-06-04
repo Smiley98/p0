@@ -32,7 +32,7 @@ int main()
     InitWindow(800, 800, "PRIMEOPS ZERO");
     SetTargetFPS(144);
     AppLoad();
-    Scene::Load(SCENE_DEV_PHYSICS);
+    Scene::Load(SCENE_DEV_MAP);
 
     while (!WindowShouldClose())
     {
@@ -40,7 +40,9 @@ int main()
         BeginDrawing();
         ClearBackground(BLACK);
         Scene::Draw();
+#ifdef DEBUG
         Scene::DrawDebug();
+#endif
         Scene::DrawGui();
         EndDrawing();
     }

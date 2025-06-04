@@ -1,9 +1,7 @@
 #pragma once
-#include "raylib.h"
-#include "raymathext.h"
+#include "WorldDef.h"
 #include "Gear.h"
 
-struct World;
 struct Mech
 {
     Vector3 pos = Vector3Zeros;
@@ -20,14 +18,25 @@ struct Mech
 
     Material material;
 
+    bool destroy = false;
+
+    OnCollisionMechMech on_collision_mech = nullptr;
+    OnCollisionMechBuilding on_collision_building = nullptr;
+    OnCollisionMechProjectile on_collision_projectile = nullptr;
+
     int player = 0;
 
     Gear gear[4];
+
+#ifdef DEBUG
+    bool debug_collion = false;
+#endif
 };
 
 void CreateMech(Mech* mech, int player);
 void DestroyMech(Mech* mech);
 
 void UpdateMech(Mech& mech, World& world);
+
 void DrawMech(const Mech& mech);
 void DrawMechDebug(const Mech& mech);

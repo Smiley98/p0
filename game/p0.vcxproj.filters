@@ -226,5 +226,8 @@
     <ClInclude Include="src\Collision3D.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="src\WorldDef.h">
+      <Filter>World</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

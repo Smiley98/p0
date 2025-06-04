@@ -1,20 +1,26 @@
 #pragma once
-#include "raylib.h"
-#include "raymathext.h"
-#include "Types.h"
+#include "WorldDef.h"
 
 struct Building
 {
 	BuildingType type = BUILDING_TYPE_COUNT;
 	Vector3 pos = Vector3Zeros;
 
-	Material material;
-	float durability;
-
 	float radius;
 	float length;
 
-	bool collision;
+	Material material;
+	float durability;
+	float death_timer;
+
+	bool destroy = false;
+
+	OnCollisionMechBuilding on_collision_mech = nullptr;
+	OnCollisionProjectileBuilding on_collision_projectile = nullptr;
+
+#ifdef DEBUG
+	bool debug_collion = false;
+#endif
 };
 
 void CreateBuilding(Building* building, BuildingType type);

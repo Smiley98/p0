@@ -1,10 +1,6 @@
 #pragma once
-#include "raylib.h"
-#include "raymathext.h"
-#include "Types.h"
+#include "WorldDef.h"
 
-struct Mech;
-struct World;
 struct Projectile
 {
 	ProjectileType type = PROJECTILE_TYPE_COUNT;
@@ -17,6 +13,15 @@ struct Projectile
 
 	Material material;
 	Mesh* mesh;
+
+	bool destroy = false;
+
+	OnCollisionMechProjectile on_collision_mech = nullptr;
+	OnCollisionProjectileBuilding on_collision_building = nullptr;
+
+#ifdef DEBUG
+	bool debug_collion = false;
+#endif
 
 	union
 	{
@@ -41,8 +46,7 @@ struct Projectile
 	};
 };
 
-// TODO - Figure out how entities should be deleted
-//void DestroyProjectile(Projectile* p);
+void DestroyProjectile(Projectile* p);
 void CreateProjectileRifle(Mech& mech, World& world);
 void CreateProjectileShotgun(Mech& mech, World& world);
 void CreateProjectileGrenade(Mech& mech, World& world);

@@ -67,6 +67,9 @@ void UpdateMech(Mech& mech, World& world)
     mech.vel *= powf(mech.drag, dt);
     mech.pos += mech.vel * dt;
 
+    BoundingBox world_box = WorldBox();
+    mech.pos = Vector3Clamp(mech.pos, world_box.min, world_box.max);
+
     ParticleEmitter& pe = mech.trail;
     pe.position = mech.pos;
     pe.direction = TorsoDirection(mech) * -1.0f;

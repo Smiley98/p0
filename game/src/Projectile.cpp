@@ -87,7 +87,7 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 
 	Projectile p;
 	p.pos = mech.pos + TorsoDirection(mech) * 10.0f;
-	p.vel = dir * 30.0f;
+	p.vel = dir * 40.0f;
 	p.radius = 2.0f;
 	p.gravity_scale = 4.0f;
 	p.type = PROJECTILE_GRENADE;
@@ -126,6 +126,8 @@ void UpdateProjectile(Projectile& p)
 	float dt = GetFrameTime();
 	p.vel += GRAVITY * p.gravity_scale * dt;
 	p.pos += p.vel * dt;
+
+	p.destroy |= !CheckCollisionBoxSphere(WorldBox(), p.pos, 1.0f);
 
 	ParticleEmitter& pe = p.trail;
 	pe.position = p.pos;

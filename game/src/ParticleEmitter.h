@@ -61,6 +61,8 @@ struct ParticleEmitter
     float spawn_accumulator = 0.0f;
 };
 
+void DestroyParticleEmitter(ParticleEmitter* emitter);
+
 void UpdateParticleEmitter(ParticleEmitter& emitter);
 void DrawParticleEmitter(const ParticleEmitter& emitter, const Camera& camera);
 

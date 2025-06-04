@@ -35,6 +35,7 @@ void CreateMech(Mech* mech, int player)
     mech->gear[3] = CreateGearMissileLauncher();
 
     ParticleEmitter& pe = mech->trail;
+    pe.spawn_rate = 10.0f;
     pe.lifetime = 2.0f;
     pe.speed = 10.0f;
     pe.size = 2.0f;

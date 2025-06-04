@@ -1,5 +1,6 @@
 #include "Projectile.h"
 #include "Meshes.h"
+#include "Camera.h"
 #include <cassert>
 #include "DebugDraw.h"
 
@@ -7,11 +8,28 @@
 #include "World.h"
 #include "Audio.h"
 
+void CreateParticleTrail(Projectile* p)
+{
+	// TODO - Make weapon-specifc particle effects -- ie increase particles on rifle, decrease particles on grenade (1 projectile vs 6 projectiles)
+	// (Don't bother with this until gear physics [velocity] are finalized [if projectile velocity changes, particle effects must be updated accordingly)
+	ParticleEmitter& pe = p->trail;
+	pe.spawn_rate = 10.0f;
+	pe.lifetime = 1.0f;
+	pe.speed = 30.0f;
+	pe.size = 1.0f;
+	pe.color_src = p->color;
+	pe.color_dst = ColorLerp(p->color, BLACK, 0.6f);
+	pe.shape_type = PARTICLE_SHAPE_SPHERE;
+	pe.shape.sphere.radius = 2.0f;
+}
+
 void DestroyProjectile(Projectile* p)
 {
 	p->mesh = nullptr;
 	p->type = PROJECTILE_TYPE_COUNT;
 	UnloadMaterial(p->material);
+
+	DestroyParticleEmitter(&p->trail);
 }
 
 void CreateProjectileRifle(Mech& mech, World& world)
@@ -24,9 +42,11 @@ void CreateProjectileRifle(Mech& mech, World& world)
 	p.radius = 1.5f;
 	p.type = PROJECTILE_RIFLE;
 
+	p.color = RED;
 	p.mesh = g_meshes.prj_straight;
 	p.material = LoadMaterialDefault();
-	p.material.maps[MATERIAL_MAP_DIFFUSE].color = RED;
+
+	CreateParticleTrail(&p);
 
 	world.projectiles.push_back(p);
 	PlaySound(g_audio.fire_rifle);
@@ -48,9 +68,11 @@ void CreateProjectileShotgun(Mech& mech, World& world)
 		p.radius = 2.0f;
 		p.type = PROJECTILE_SHOTGUN;
 
+		p.color = GREEN;
 		p.mesh = g_meshes.prj_straight;
 		p.material = LoadMaterialDefault();
-		p.material.maps[MATERIAL_MAP_DIFFUSE].color = GREEN;
+
+		CreateParticleTrail(&p);
 
 		world.projectiles.push_back(p);
 	}
@@ -70,9 +92,11 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 	p.gravity_scale = 4.0f;
 	p.type = PROJECTILE_GRENADE;
 
+	p.color = BLUE;
 	p.mesh = g_meshes.prj_grenade;
 	p.material = LoadMaterialDefault();
-	p.material.maps[MATERIAL_MAP_DIFFUSE].color = BLUE;
+
+	CreateParticleTrail(&p);
 
 	world.projectiles.push_back(p);
 	PlaySound(g_audio.fire_grenade);
@@ -88,18 +112,25 @@ void CreateProjectileMissile(Mech& mech, World& world, float roll)
 	p.radius = 2.0f;
 	p.type = PROJECTILE_MISSILE;
 
+	p.color = GOLD;
 	p.mesh = g_meshes.prj_missile;
 	p.material = LoadMaterialDefault();
-	p.material.maps[MATERIAL_MAP_DIFFUSE].color = GOLD;
 
 	world.projectiles.push_back(p);
 }
 
 void UpdateProjectile(Projectile& p)
 {
+	p.material.maps[MATERIAL_MAP_DIFFUSE].color = p.color;
+
 	float dt = GetFrameTime();
 	p.vel += GRAVITY * p.gravity_scale * dt;
 	p.pos += p.vel * dt;
+
+	ParticleEmitter& pe = p.trail;
+	pe.position = p.pos;
+	pe.direction = Vector3Normalize(p.vel) * -1.0f;
+	UpdateParticleEmitter(pe);
 }
 
 void DrawProjectile(const Projectile& p)
@@ -107,6 +138,7 @@ void DrawProjectile(const Projectile& p)
 	Matrix t = MatrixTranslate(p.pos.x, p.pos.y, p.pos.z);
 	Matrix r = MatrixLookRotation(Vector3Normalize(p.vel));
 	DrawMesh(*p.mesh, p.material, r * t);
+	DrawParticleEmitter(p.trail, *GetCamera());
 }
 
 void DrawProjectileDebug(const Projectile& p)

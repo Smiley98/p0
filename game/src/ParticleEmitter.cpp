@@ -43,6 +43,12 @@ Particle CreateParticle(const ParticleEmitter& emitter)
     return p;
 }
 
+void DestroyParticleEmitter(ParticleEmitter* emitter)
+{
+    emitter->shape_type = PARTICLE_SHAPE_TYPE_COUNT;
+    emitter->particles.clear();
+}
+
 void UpdateParticleEmitter(ParticleEmitter& emitter)
 {
     emitter.particles.erase

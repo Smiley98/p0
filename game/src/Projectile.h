@@ -1,5 +1,6 @@
 #pragma once
 #include "WorldDef.h"
+#include "ParticleEmitter.h"
 
 struct Projectile
 {
@@ -11,6 +12,7 @@ struct Projectile
 	float radius = 0.0f;
 	float length = 0.0f;
 
+	Color color = WHITE;
 	Material material;
 	Mesh* mesh = nullptr;
 
@@ -20,6 +22,8 @@ struct Projectile
 
 	OnCollisionMechProjectile on_collision_mech = nullptr;
 	OnCollisionProjectileBuilding on_collision_building = nullptr;
+
+	ParticleEmitter trail;
 
 #ifdef DEBUG
 	bool debug_collion = false;

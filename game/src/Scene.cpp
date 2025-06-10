@@ -30,6 +30,7 @@ void Scene::Load(SceneType scene)
 	s_scenes[SCENE_DEV_PARTICLES] = new ParticlesScene;
 	s_scenes[SCENE_DEV_PHYSICS] = new PhysicsScene;
 	s_scenes[SCENE_DEV_WIDGETS] = new WidgetsScene;
+	s_scenes[SCENE_DEV_GROUND] = new GroundScene;
 
 	for (size_t i = 0; i < SCENE_TYPE_COUNT; i++)
 		s_scenes[i]->OnLoad();

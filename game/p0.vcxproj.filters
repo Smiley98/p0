@@ -136,6 +136,9 @@
     <ClCompile Include="src\Audio.cpp">
       <Filter>Assets\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="src\GroundScene.cpp">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -237,6 +240,9 @@
     </ClInclude>
     <ClInclude Include="src\Audio.h">
       <Filter>Assets\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GroundScene.h">
+      <Filter>Scenes\Deveopment</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

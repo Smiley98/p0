@@ -120,6 +120,7 @@
     <ClCompile Include="src\DebugDraw.cpp" />
     <ClCompile Include="src\Gear.cpp" />
     <ClCompile Include="src\GearScene.cpp" />
+    <ClCompile Include="src\GroundScene.cpp" />
     <ClCompile Include="src\LoadoutSelectScene.cpp" />
     <ClCompile Include="src\MapScene.cpp" />
     <ClCompile Include="src\Meshes.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="src\Collision3D.h" />
     <ClInclude Include="src\DebugDraw.h" />
     <ClInclude Include="src\GearScene.h" />
+    <ClInclude Include="src\GroundScene.h" />
     <ClInclude Include="src\LoadoutSelectScene.h" />
     <ClInclude Include="src\MapScene.h" />
     <ClInclude Include="src\Meshes.h" />

@@ -13,6 +13,7 @@
 #include "ParticlesScene.h"
 #include "PhysicsScene.h"
 #include "WidgetsScene.h"
+#include "GroundScene.h"
 
 Scene* Scene::s_scenes[SCENE_TYPE_COUNT]{};
 SceneType Scene::s_current = SCENE_TYPE_COUNT;

@@ -52,10 +52,8 @@ void GroundScene::OnLoad()
     hexThickness = 0.1f;
 
     
-    hexGridTarget = LoadRenderTexture(800,800);
+    hexGridTarget = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 }
-
-
 
 void GroundScene::OnUnload()
 {
@@ -81,40 +79,22 @@ void GroundScene::OnUpdate()
 
 void GroundScene::OnDraw()
 {
-	
-		
-	
-
     BeginTextureMode(hexGridTarget);
-    {
+    BeginShaderMode(hexShader);
+        Vector2 resolution = { hexGridTarget.texture.width, hexGridTarget.texture.height };
         ClearBackground(BLACK);
-        BeginShaderMode(hexShader);
-
-      
-        Vector2 resolution = { 800, 800 };
         SetShaderValue(hexShader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
         SetShaderValue(hexShader, resLoc, &resolution, SHADER_UNIFORM_VEC2);
         SetShaderValue(hexShader, fgColLoc, &fgColor, SHADER_UNIFORM_VEC3);
         SetShaderValue(hexShader, bgColLoc, &bgColor, SHADER_UNIFORM_VEC3);
         SetShaderValue(hexShader, hexResLoc, &hexRes, SHADER_UNIFORM_FLOAT);
         SetShaderValue(hexShader, hexThicknessLoc, &hexThickness, SHADER_UNIFORM_FLOAT);
-
-		// this be the quad
-        DrawRectangle(0, 0, 100, 800, WHITE);
-
-        EndShaderMode();
-    }
+        DrawRectangle(0, 0, resolution.x, resolution.y, WHITE);
+    EndShaderMode();
     EndTextureMode();
-    BeginDrawing();
-    //ClearBackground(RAYWHITE); commenting this out removed SOME flickering but not all flickering??
-    DrawTextureRec(hexGridTarget.texture, { 0, 0, 800, -800 }, { 0, 0 }, RED);
-    EndDrawing();
-    
-    
-   
+
+    DrawTextureRec(hexGridTarget.texture, { 0, 0, resolution.x, -resolution.y }, { 0, 0 }, WHITE);
 }
-
-
 
 void GroundScene::OnDrawDebug()
 {

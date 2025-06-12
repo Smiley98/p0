@@ -35,30 +35,30 @@ void GroundScene::OnLoad()
     camera.projection = CAMERA_PERSPECTIVE;
 
   
-    hexShader = LoadShader(0, TextFormat("assets/shaders/hexagon_grid_raymarch.frag"));
+    hex_shader = LoadShader(0, TextFormat("assets/shaders/hexagon_grid_raymarch.frag"));
 
     
-    timeLoc = GetShaderLocation(hexShader, "u_time");
-    resLoc = GetShaderLocation(hexShader, "u_resolution");
-    fgColLoc = GetShaderLocation(hexShader, "u_fg_col");
-    bgColLoc = GetShaderLocation(hexShader, "u_bg_col");
-    hexResLoc = GetShaderLocation(hexShader, "u_hex_res");
-    hexThicknessLoc = GetShaderLocation(hexShader, "u_hex_thickness");
+    time_loc = GetShaderLocation(hex_shader, "u_time");
+    res_loc = GetShaderLocation(hex_shader, "u_resolution");
+    fg_col_loc = GetShaderLocation(hex_shader, "u_fg_col");
+    bg_col_loc = GetShaderLocation(hex_shader, "u_bg_col");
+    hex_res_loc = GetShaderLocation(hex_shader, "u_hex_res");
+    hex_thickness_loc = GetShaderLocation(hex_shader, "u_hex_thickness");
 
    
-    fgColor = { 1.0f, 0.10f, 1.0f };
-    bgColor = { 0.0f, 1.0f, 0.0f };
-    hexRes = 10.0f;
-    hexThickness = 0.1f;
+    fg_color = { 1.0f, 0.10f, 1.0f };
+    bg_color = { 0.0f, 1.0f, 0.0f };
+    hex_res = 10.0f;
+    hex_thickness = 0.1f;
 
     
-    hexGridTarget = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
+    hex_grid_target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 }
 
 void GroundScene::OnUnload()
 {
-    UnloadShader(hexShader);
-    UnloadRenderTexture(hexGridTarget);
+    UnloadShader(hex_shader);
+    UnloadRenderTexture(hex_grid_target);
 }
 
 void GroundScene::OnStart()
@@ -79,21 +79,21 @@ void GroundScene::OnUpdate()
 
 void GroundScene::OnDraw()
 {
-    BeginTextureMode(hexGridTarget);
-    BeginShaderMode(hexShader);
-        Vector2 resolution = { hexGridTarget.texture.width, hexGridTarget.texture.height };
+    BeginTextureMode(hex_grid_target);
+    BeginShaderMode(hex_shader);
+        Vector2 resolution = { hex_grid_target.texture.width, hex_grid_target.texture.height };
         ClearBackground(BLACK);
-        SetShaderValue(hexShader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
-        SetShaderValue(hexShader, resLoc, &resolution, SHADER_UNIFORM_VEC2);
-        SetShaderValue(hexShader, fgColLoc, &fgColor, SHADER_UNIFORM_VEC3);
-        SetShaderValue(hexShader, bgColLoc, &bgColor, SHADER_UNIFORM_VEC3);
-        SetShaderValue(hexShader, hexResLoc, &hexRes, SHADER_UNIFORM_FLOAT);
-        SetShaderValue(hexShader, hexThicknessLoc, &hexThickness, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(hex_shader, time_loc, &time, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(hex_shader, res_loc, &resolution, SHADER_UNIFORM_VEC2);
+        SetShaderValue(hex_shader, fg_col_loc, &fg_color, SHADER_UNIFORM_VEC3);
+        SetShaderValue(hex_shader, bg_col_loc, &bg_color, SHADER_UNIFORM_VEC3);
+        SetShaderValue(hex_shader, hex_res_loc, &hex_res, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(hex_shader, hex_thickness_loc, &hex_thickness, SHADER_UNIFORM_FLOAT);
         DrawRectangle(0, 0, resolution.x, resolution.y, WHITE);
     EndShaderMode();
     EndTextureMode();
 
-    DrawTextureRec(hexGridTarget.texture, { 0, 0, resolution.x, -resolution.y }, { 0, 0 }, WHITE);
+    DrawTextureRec(hex_grid_target.texture, { 0, 0, resolution.x, -resolution.y }, { 0, 0 }, WHITE);
 }
 
 void GroundScene::OnDrawDebug()

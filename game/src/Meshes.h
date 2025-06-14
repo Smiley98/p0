@@ -9,7 +9,7 @@ struct Meshes
 
 	Mesh* bld_td;
 	//Mesh* bld_bmo;
-	//Mesh* bld_condo;
+	Mesh* bld_condo;
 	//Mesh* bld_cn_tower;
 
 	Mesh* prj_straight;

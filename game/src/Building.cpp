@@ -25,6 +25,10 @@ inline Mesh* BuildingMesh(BuildingType type)
     case BUILDING_TD:
         mesh = g_meshes.bld_td;
         break;
+
+    case BUILDING_CONDO:
+        mesh = g_meshes.bld_condo;
+        break;
     }
 
     assert(mesh != nullptr, "Invalid building type");
@@ -37,7 +41,7 @@ void CreateBuilding(Building* building, BuildingType type)
     building->durability = BuildingDurability(type);
     building->material = LoadMaterialDefault();
     building->radius = 5.0f;
-    building->length = 50.0f;
+    building->length = 25.0f;
     building->death_timer = 2.0f;
 }
 

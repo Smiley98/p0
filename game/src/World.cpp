@@ -172,7 +172,7 @@ void LoadBuildings(Buildings& buildings)
 
             Building building;
             building.pos = { x, y, 0.0f };
-            CreateBuilding(&building, BUILDING_TD);
+            CreateBuilding(&building, BUILDING_CONDO);
             buildings.push_back(building);
         }
     }

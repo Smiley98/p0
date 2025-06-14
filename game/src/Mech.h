@@ -28,6 +28,7 @@ struct Mech
     int player = 0;
 
     Gear gear[4];
+    Vector3 gear_positions[4];
 
     ParticleEmitter trail;
 

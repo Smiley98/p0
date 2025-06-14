@@ -51,10 +51,10 @@ struct Projectile
 };
 
 void DestroyProjectile(Projectile* p);
-void CreateProjectileRifle(Mech& mech, World& world);
-void CreateProjectileShotgun(Mech& mech, World& world);
-void CreateProjectileGrenade(Mech& mech, World& world);
-void CreateProjectileMissile(Mech& mech, World& world, float roll);
+void CreateProjectileRifle(Mech& mech, World& world, Vector3 base_pos);
+void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos);
+void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos);
+void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float roll);
 
 void UpdateProjectile(Projectile& p);
 void DrawProjectile(const Projectile& p);

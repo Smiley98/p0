@@ -12,6 +12,7 @@ void UpdateInputFire(Mech& mech, World& world);
 
 void FireGear(Mech& mech, World& world, int slot);
 void UpdateGear(Mech& mech, World& world, int slot);
+void UpdateGearPositions(Mech& mech);
 
 void CreateMech(Mech* mech, int player)
 {
@@ -58,6 +59,8 @@ void UpdateMech(Mech& mech, World& world)
 
     UpdateInputAim(mech);
     UpdateInputMove(mech);
+
+    UpdateGearPositions(mech);
     UpdateInputFire(mech, world);
     
     for (int i = 0; i < 4; i++)
@@ -88,7 +91,7 @@ void DrawMech(const Mech& mech)
 
     DrawMesh(*g_meshes.mech_torso, mech.material, torso_world);
     DrawMesh(*g_meshes.mech_legs, mech.material, legs_world);
-    DrawParticleEmitter(mech.trail, *GetCamera());
+    //DrawParticleEmitter(mech.trail, *GetCamera());
 }
 
 void DrawMechDebug(const Mech& mech)
@@ -96,6 +99,9 @@ void DrawMechDebug(const Mech& mech)
     DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
     Color color = mech.debug_collion ? SKYBLUE : mech.material.maps[MATERIAL_MAP_DIFFUSE].color;
     color.a = 128;
+
+    for (int i = 0; i < 4; i++)
+        DrawSphere(mech.gear_positions[i], 0.5f, RED);
 }
 
 void UpdateInputAim(Mech& mech)
@@ -166,6 +172,8 @@ void UpdateInputFire(Mech& mech, World& world)
 void FireGear(Mech& mech, World& world, int slot)
 {
     Gear& gear = mech.gear[slot];
+    Vector3 gear_position = mech.gear_positions[slot];
+
     if (gear.cooldown <= 0.0f)
     {
         TraceLog(LOG_INFO, "Slot %i", slot);
@@ -173,11 +181,11 @@ void FireGear(Mech& mech, World& world, int slot)
         switch (gear.type)
         {
         case GEAR_RIFLE:
-            CreateProjectileRifle(mech, world);
+            CreateProjectileRifle(mech, world, gear_position);
             break;
 
         case GEAR_SHOTGUN:
-            CreateProjectileShotgun(mech, world);
+            CreateProjectileShotgun(mech, world, gear_position);
             break;
 
         case GEAR_GRENADE_LAUNCHER:
@@ -200,6 +208,8 @@ void FireGear(Mech& mech, World& world, int slot)
 void UpdateGear(Mech& mech, World& world, int slot)
 {
     Gear& gear = mech.gear[slot];
+    Vector3 gear_position = mech.gear_positions[slot];
+
     float dt = GetFrameTime();
     gear.cooldown -= dt;
 
@@ -209,7 +219,7 @@ void UpdateGear(Mech& mech, World& world, int slot)
         g.launch_cooldown -= dt;
         if (g.launch_cooldown <= 0.0f && g.grenades > 0)
         {
-            CreateProjectileGrenade(mech, world);
+            CreateProjectileGrenade(mech, world, gear_position);
             g.launch_cooldown = g.launch_cooldown_max;
             g.grenades--;
         }
@@ -220,10 +230,23 @@ void UpdateGear(Mech& mech, World& world, int slot)
         g.launch_cooldown -= dt;
         if (g.launch_cooldown <= 0.0f && g.missiles > 0)
         {
-            CreateProjectileMissile(mech, world, g.launch_roll);
+            CreateProjectileMissile(mech, world, gear_position, g.launch_roll);
             g.launch_roll -= 20.0f * DEG2RAD; // 20, 0, -20 
             g.launch_cooldown = g.launch_cooldown_max;
             g.missiles--;
         }
     }
+}
+
+void UpdateGearPositions(Mech& mech)
+{
+    Vector3 mount_offsets[4];
+    mount_offsets[0] = { -8.0f, 5.0f, 15.0f };
+    mount_offsets[1] = { -3.0f, 2.0f, 15.0f };
+    mount_offsets[2] = {  3.0f, 2.0f, 15.0f };
+    mount_offsets[3] = {  8.0f, 5.0f, 15.0f };
+    
+    Matrix rotation = QuaternionToMatrix(mech.torso_rotation);
+    for (int i = 0; i < 4; i++)
+        mech.gear_positions[i] = mech.pos + Vector3Transform(mount_offsets[i], rotation);
 }

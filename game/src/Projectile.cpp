@@ -32,13 +32,11 @@ void DestroyProjectile(Projectile* p)
 	DestroyParticleEmitter(&p->trail);
 }
 
-void CreateProjectileRifle(Mech& mech, World& world)
+void CreateProjectileRifle(Mech& mech, World& world, Vector3 base_pos)
 {
-	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
-
 	Projectile p;
-	p.pos = mech.pos + mech_dir * 10.0f;
-	p.vel = mech_dir * 75.0f;
+	p.pos = base_pos;
+	p.vel = TorsoDirection(mech) * 75.0f;
 	p.radius = 1.5f;
 	p.type = PROJECTILE_RIFLE;
 
@@ -52,18 +50,16 @@ void CreateProjectileRifle(Mech& mech, World& world)
 	PlaySound(g_audio.fire_rifle);
 }
 
-void CreateProjectileShotgun(Mech& mech, World& world)
+void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos)
 {
-	Vector3 mech_dir = Vector3RotateByQuaternion(Vector3UnitY, mech.torso_rotation);
-
 	Projectile projectiles[3];
 	for (int i = 0; i < 3; i++)
 	{
 		Projectile& p = projectiles[i];
 		Quaternion spread = QuaternionFromEuler(0.0f, 0.0f, (-30.0f + i * 30.0f) * DEG2RAD);
-		Vector3 dir = Vector3RotateByQuaternion(mech_dir, spread);
+		Vector3 dir = Vector3RotateByQuaternion(TorsoDirection(mech), spread);
 
-		p.pos = mech.pos + mech_dir * 10.0f;
+		p.pos = base_pos;
 		p.vel = dir * 60.0f;
 		p.radius = 2.0f;
 		p.type = PROJECTILE_SHOTGUN;
@@ -79,14 +75,14 @@ void CreateProjectileShotgun(Mech& mech, World& world)
 	PlaySound(g_audio.fire_shotgun);
 }
 
-void CreateProjectileGrenade(Mech& mech, World& world)
+void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos)
 {
 	float pitch = (60.0f + Random(-15.0f, 15.0f)) * DEG2RAD;
 	float roll = Random(-40.0f, 40.0f) * DEG2RAD;
 	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(pitch, 0.0f, roll)));
 
 	Projectile p;
-	p.pos = mech.pos + TorsoDirection(mech) * 10.0f;
+	p.pos = base_pos;
 	p.vel = dir * 40.0f;
 	p.radius = 2.0f;
 	p.gravity_scale = 4.0f;
@@ -102,12 +98,12 @@ void CreateProjectileGrenade(Mech& mech, World& world)
 	PlaySound(g_audio.fire_grenade);
 }
 
-void CreateProjectileMissile(Mech& mech, World& world, float roll)
+void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float roll)
 {
 	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, roll)));
 
 	Projectile p;
-	p.pos = mech.pos + TorsoDirection(mech) * 10.0f;
+	p.pos = base_pos + TorsoDirection(mech) * 10.0f;
 	p.vel = dir * 40.0f;
 	p.radius = 2.0f;
 	p.type = PROJECTILE_MISSILE;

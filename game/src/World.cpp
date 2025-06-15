@@ -254,11 +254,19 @@ void UpdateCollisionsMechBuilding(Mechs& mechs, Buildings& buildings)
     {
         for (Building& building : buildings)
         {
+
             HitInfo hi;
-            bool collision = false;
+            Vector3 mtv;
+
+            bool collision = SphereCapsule(
+                mech.pos, mech.radius,
+                building.pos + Vector3UnitZ * building.length * 0.5f, Vector3UnitZ, building.radius, building.length * 0.5f - building.radius, &mtv);
 
             if (collision)
             {
+                mtv.z = 0.0f;
+                mech.pos += mtv;
+
                 OnCollisionMechBuildingDefault(mech, building, hi);
 
                 if (mech.on_collision_building != nullptr)

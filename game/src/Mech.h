@@ -11,6 +11,8 @@ struct Mech
     float move_speed = 100.0f;
     float drag = 0.05f; // 0.0 = full drag, 1.0 = no drag
 
+    float radius = 8.0f;
+
     Quaternion legs_rotation;
     Quaternion torso_rotation;
     Quaternion legs_rotation_goal;

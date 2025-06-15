@@ -291,7 +291,9 @@ void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles)
         for (Projectile& projectile : projectiles)
         {
             HitInfo hi;
-            bool collision = false;
+            bool collision = SphereSphere(
+                mech.pos, mech.radius,
+                projectile.pos, projectile.radius);
 
             if (collision)
             {
@@ -356,7 +358,7 @@ void OnCollisionMechBuildingDefault(Mech& mech, Building& building, HitInfo hi)
 
 void OnCollisionMechProjectileDefault(Mech& mech, Projectile& projectile, HitInfo hi)
 {
-
+    
 }
 
 void OnCollisionProjectileBuildingDefault(Projectile& projectile, Building& building, HitInfo hi)

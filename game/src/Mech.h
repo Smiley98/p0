@@ -20,6 +20,7 @@ struct Mech
 
     Material material;
 
+    float health = 100.0f;
     bool destroy = false;
 
     OnCollisionMechMech on_collision_mech = nullptr;

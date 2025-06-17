@@ -25,3 +25,10 @@ enum GearType : uint32_t
 	GEAR_MISSILE_LAUNCHER,
 	GEAR_TYPE_COUNT
 };
+
+enum Team : uint32_t
+{
+	TEAM_NONE,
+	TEAM_RED,
+	TEAM_BLUE
+};

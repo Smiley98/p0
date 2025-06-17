@@ -40,6 +40,14 @@ int main()
 
     while (!WindowShouldClose())
     {
+#ifdef DEBUG
+        if (IsKeyPressed(KEY_G))
+        {
+            for (int i = 0; i < 4; i++)
+                TraceLog(LOG_INFO, "Gamepad %i %s", i, IsGamepadAvailable(i) ? "connected" : "disconnected");
+        }
+#endif
+
         Scene::Update();
         BeginDrawing();
         ClearBackground(BLACK);

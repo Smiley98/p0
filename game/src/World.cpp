@@ -156,19 +156,24 @@ void DrawWorldDebug(const World& world)
 
 void LoadMechs(Mechs& mechs)
 {
-    Mech mech;
-    CreateMech(&mech, 0);
-    mechs.push_back(mech);
+    for (int i = 0; i < 4; i++)
+    {
+        Mech mech;
+        CreateMech(&mech, i);
+        mechs.push_back(mech);
+    }
 }
 
 void LoadBuildings(Buildings& buildings)
 {
-    for (float y = -40.0f; y <= 40.0f; y += 20.0f)
+    //float step = 20.0f; <-- changed to 40 for missile testing
+    float step = 40.0f;
+    for (float y = -40.0f; y <= 40.0f; y += step)
     {
-        for (float x = -80.0f; x <= 80.0f; x += 20.0f)
+        for (float x = -80.0f; x <= 80.0f; x += step)
         {
             // Temporarily omit centre building for visibility
-            if (x == 0.0f && y == 0.0f) continue;
+            //if (x == 0.0f && y == 0.0f) continue;
 
             Building building;
             building.pos = { x, y, 0.0f };

@@ -16,6 +16,7 @@ void UpdateGearPositions(Mech& mech);
 
 void CreateMech(Mech* mech, int player)
 {
+    mech->team = player < 2 ? TEAM_RED : TEAM_BLUE;
     float roll = player % 2 == 0 ? 0.0f : PI;
     Quaternion rotation = QuaternionFromEuler(0.0f, 0.0f, roll);
 
@@ -25,7 +26,7 @@ void CreateMech(Mech* mech, int player)
     mech->torso_rotation_goal = rotation;
 
     mech->material = LoadMaterialDefault();
-    mech->material.maps[MATERIAL_MAP_DIFFUSE].color = GRAY;
+    mech->material.maps[MATERIAL_MAP_DIFFUSE].color = mech->team == TEAM_RED ? RED : BLUE;
 
     mech->player = player;
 
@@ -42,6 +43,17 @@ void CreateMech(Mech* mech, int player)
     pe.size = 2.0f;
     pe.shape_type = PARTICLE_SHAPE_SPHERE;
     pe.shape.sphere.radius = 5.0f;
+
+    Vector3 positions[4];
+    positions[0] = { -20.0f, -40.0f, 0.0f };
+    positions[1] = { -20.0f,  40.0f, 0.0f };
+    positions[2] = {  20.0f, -40.0f, 0.0f };
+    positions[3] = {  20.0f,  40.0f, 0.0f };
+    mech->pos = positions[player];
+
+#ifdef DEBUG
+    mech->debug_poll_input = player == 0;
+#endif
 }
 
 void DestroyMech(Mech* mech)
@@ -51,18 +63,25 @@ void DestroyMech(Mech* mech)
 
 void UpdateMech(Mech& mech, World& world)
 {
-    if (!IsGamepadAvailable(mech.player))
+    bool poll_input = false;
+#ifdef DEBUG
+    poll_input = mech.debug_poll_input;
+#endif
+    if (poll_input)
     {
-        TraceLog(LOG_WARNING, "Player %i gamepad polled but not found");
-        return;
+        if (IsGamepadAvailable(mech.player))
+        {
+            UpdateInputAim(mech);
+            UpdateInputMove(mech);
+            UpdateInputFire(mech, world);
+        }
+        else
+        {
+            TraceLog(LOG_WARNING, "Player %i gamepad polled but not connected", mech.player);
+        }
     }
-
-    UpdateInputAim(mech);
-    UpdateInputMove(mech);
-
-    UpdateGearPositions(mech);
-    UpdateInputFire(mech, world);
     
+    UpdateGearPositions(mech);
     for (int i = 0; i < 4; i++)
         UpdateGear(mech, world, i);
 
@@ -101,7 +120,7 @@ void DrawMechDebug(const Mech& mech)
     color.a = 128;
 
     for (int i = 0; i < 4; i++)
-        DrawSphere(mech.gear_positions[i], 0.5f, RED);
+        DrawSphere(mech.gear_positions[i], 0.5f, DARKGREEN);
 }
 
 void UpdateInputAim(Mech& mech)

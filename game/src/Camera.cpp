@@ -16,8 +16,8 @@ void LoadCamera()
     Camera td_camera;
     //tdCamera.position = Vector3UnitZ * 100.0f;
     //tdCamera.target = Vector3Zeros;
-    td_camera.position = { 0.0f, -10.0f, 40.0f };
-    td_camera.target = Vector3Zeros;
+    td_camera.position = { 0.0f, -30.0f, 70.0f };
+    td_camera.target = { 0.0f, -20.0f, 0.0f };
     td_camera.up = Vector3UnitY;
     td_camera.fovy = 75.0f;
     td_camera.projection = CAMERA_PERSPECTIVE;

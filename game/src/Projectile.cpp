@@ -78,14 +78,14 @@ void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos)
 void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos)
 {
 	float pitch = (60.0f + Random(-15.0f, 15.0f)) * DEG2RAD;
-	float roll = Random(-40.0f, 40.0f) * DEG2RAD;
+	float roll = Random(-30.0f, 30.0f) * DEG2RAD;
 	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(pitch, 0.0f, roll)));
 
 	Projectile p;
 	p.pos = base_pos;
-	p.vel = dir * 40.0f;
+	p.vel = dir * 50.0f;
 	p.radius = 2.0f;
-	p.gravity_scale = 4.0f;
+	p.gravity_scale = 6.0f;
 	p.type = PROJECTILE_GRENADE;
 
 	p.color = BLUE;
@@ -111,6 +111,8 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	p.color = GOLD;
 	p.mesh = g_meshes.prj_missile;
 	p.material = LoadMaterialDefault();
+
+	CreateParticleTrail(&p);
 
 	world.projectiles.push_back(p);
 }

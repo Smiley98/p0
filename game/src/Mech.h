@@ -31,9 +31,11 @@ struct Mech
     Vector3 gear_positions[4];
 
     ParticleEmitter trail;
+    Team team = TEAM_NONE;
 
 #ifdef DEBUG
     bool debug_collion = false;
+    bool debug_poll_input = false;
 #endif
 };
 

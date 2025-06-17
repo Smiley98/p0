@@ -5,8 +5,8 @@ class GroundScene : public Scene
 public:
 	Camera camera;
 	Model model;
-	Shader hexShader;
-	RenderTexture2D hexGridTarget;
+	Shader hex_shader;
+	RenderTexture2D hex_grid_target;
 
 	// Shader uniforms
 	int time_loc, res_loc, fg_col_loc, bg_col_loc, hex_res_loc, hex_thickness_loc;

@@ -2,9 +2,28 @@
 #include "WorldDef.h"
 #include "ParticleEmitter.h"
 
+struct ProjectileStraight
+{
+	float speed;
+	float lifetime;
+};
+
+struct ProjectileGrenade
+{
+};
+
+struct ProjectileMissile
+{
+	MissileState state;
+	uint32_t target_id;
+	float move_speed;
+	float turn_speed;
+};
+
 struct Projectile
 {
 	ProjectileType type = PROJECTILE_TYPE_COUNT;
+	Team team = TEAM_NONE;
 
 	Vector3 pos = Vector3Zeros;
 	Vector3 vel = Vector3Zeros;
@@ -31,22 +50,9 @@ struct Projectile
 
 	union
 	{
-		struct
-		{
-			float speed;
-			float lifetime;
-		} straight;
-
-		struct
-		{
-		} grenade;
-
-		struct
-		{
-			float move_speed;
-			float turn_speed;
-			uint32_t target_id;
-		} missile;
+		ProjectileStraight straight;
+		ProjectileGrenade grenade;
+		ProjectileMissile missile;
 	};
 };
 
@@ -56,6 +62,6 @@ void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float roll);
 
-void UpdateProjectile(Projectile& p);
+void UpdateProjectile(Projectile& p, World& world);
 void DrawProjectile(const Projectile& p);
 void DrawProjectileDebug(const Projectile& p);

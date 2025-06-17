@@ -16,7 +16,10 @@ void UpdateGearPositions(Mech& mech);
 
 void CreateMech(Mech* mech, int player)
 {
+    mech->id = GenId();
+    mech->player = player;
     mech->team = player < 2 ? TEAM_RED : TEAM_BLUE;
+
     float roll = player % 2 == 0 ? 0.0f : PI;
     Quaternion rotation = QuaternionFromEuler(0.0f, 0.0f, roll);
 
@@ -27,8 +30,6 @@ void CreateMech(Mech* mech, int player)
 
     mech->material = LoadMaterialDefault();
     mech->material.maps[MATERIAL_MAP_DIFFUSE].color = mech->team == TEAM_RED ? RED : BLUE;
-
-    mech->player = player;
 
     // Default loadout / testing
     mech->gear[0] = CreateGearRifle();
@@ -58,11 +59,15 @@ void CreateMech(Mech* mech, int player)
 
 void DestroyMech(Mech* mech)
 {
+    mech->id = 0;
     UnloadMaterial(mech->material);
 }
 
 void UpdateMech(Mech& mech, World& world)
 {
+    assert(mech.id != 0);
+    assert(mech.team != TEAM_NONE);
+
     bool poll_input = false;
 #ifdef DEBUG
     poll_input = mech.debug_poll_input;

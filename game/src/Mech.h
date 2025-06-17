@@ -5,6 +5,12 @@
 
 struct Mech
 {
+    uint32_t id = 0;
+    int player = 0;
+
+    Team team = TEAM_NONE;
+    bool destroy = false;
+
     Vector3 pos = Vector3Zeros;
     Vector3 vel = Vector3Zeros;
 
@@ -19,19 +25,14 @@ struct Mech
 
     Material material;
 
-    bool destroy = false;
-
     OnCollisionMechMech on_collision_mech = nullptr;
     OnCollisionMechBuilding on_collision_building = nullptr;
     OnCollisionMechProjectile on_collision_projectile = nullptr;
-
-    int player = 0;
 
     Gear gear[4];
     Vector3 gear_positions[4];
 
     ParticleEmitter trail;
-    Team team = TEAM_NONE;
 
 #ifdef DEBUG
     bool debug_collion = false;

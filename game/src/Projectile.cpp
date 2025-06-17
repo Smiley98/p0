@@ -8,6 +8,8 @@
 #include "World.h"
 #include "Audio.h"
 
+void UpdateProjectileMissile(Projectile& p, World& world);
+
 void CreateParticleTrail(Projectile* p)
 {
 	// TODO - Make weapon-specifc particle effects -- ie increase particles on rifle, decrease particles on grenade (1 projectile vs 6 projectiles)
@@ -38,6 +40,7 @@ void CreateProjectileRifle(Mech& mech, World& world, Vector3 base_pos)
 	p.pos = base_pos;
 	p.vel = TorsoDirection(mech) * 75.0f;
 	p.radius = 1.5f;
+	p.team = mech.team;
 	p.type = PROJECTILE_RIFLE;
 
 	p.color = RED;
@@ -62,6 +65,7 @@ void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos)
 		p.pos = base_pos;
 		p.vel = dir * 60.0f;
 		p.radius = 2.0f;
+		p.team = mech.team;
 		p.type = PROJECTILE_SHOTGUN;
 
 		p.color = GREEN;
@@ -86,11 +90,14 @@ void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos)
 	p.vel = dir * 50.0f;
 	p.radius = 2.0f;
 	p.gravity_scale = 6.0f;
+	p.team = mech.team;
 	p.type = PROJECTILE_GRENADE;
 
 	p.color = BLUE;
 	p.mesh = g_meshes.prj_grenade;
 	p.material = LoadMaterialDefault();
+
+	p.missile.state = MISSILE_RISE;
 
 	CreateParticleTrail(&p);
 
@@ -106,6 +113,7 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	p.pos = base_pos + TorsoDirection(mech) * 10.0f;
 	p.vel = dir * 40.0f;
 	p.radius = 2.0f;
+	p.team = mech.team;
 	p.type = PROJECTILE_MISSILE;
 
 	p.color = GOLD;
@@ -117,15 +125,17 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	world.projectiles.push_back(p);
 }
 
-void UpdateProjectile(Projectile& p)
+void UpdateProjectile(Projectile& p, World& world)
 {
-	p.material.maps[MATERIAL_MAP_DIFFUSE].color = p.color;
+	if (p.type == PROJECTILE_MISSILE)
+		UpdateProjectileMissile(p, world);
 
 	float dt = GetFrameTime();
 	p.vel += GRAVITY * p.gravity_scale * dt;
 	p.pos += p.vel * dt;
 
 	p.destroy |= !CheckCollisionBoxSphere(WorldBox(), p.pos, 1.0f);
+	p.material.maps[MATERIAL_MAP_DIFFUSE].color = p.color;
 
 	ParticleEmitter& pe = p.trail;
 	pe.position = p.pos;
@@ -161,6 +171,42 @@ void DrawProjectileDebug(const Projectile& p)
 
 	//DrawLineDebug(p.pos, p.pos + dir * 20.0f, YELLOW, 4.0f);
 	DrawAxesDebug(p.pos, MatrixLookRotation(dir), 10.0f, 2.0f);
+}
+
+void UpdateProjectileMissile(Projectile& p, World& world)
+{
+	ProjectileMissile& m = p.missile;
+	if (m.state = MISSILE_RISE)
+	{
+		float distance = FLT_MAX;
+		for (Mech& mech : world.mechs)
+		{
+			if (p.team != mech.team)
+			{
+				float target_distance = Vector3Distance(mech.pos, p.pos);
+				if (target_distance < distance)
+				{
+					m.target_id = mech.id;
+				}
+			}
+		}
+	}
+	else if (m.state == MISSILE_SEEK)
+	{
+		Mech* mech = GetMechById(m.target_id, world);
+		if (mech != nullptr)
+		{
+
+		}
+		else
+		{
+			m.state = MISSILE_DIVE;
+		}
+	}
+	else if (m.state == MISSILE_DIVE)
+	{
+
+	}
 }
 
 // The original's projectiles don't take mech velocity into account when firing

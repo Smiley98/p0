@@ -35,6 +35,22 @@ void UpdateWorld(World& world);
 void DrawWorld(const World& world);
 void DrawWorldDebug(const World& world);
 
+inline uint32_t GenId()
+{
+	static uint32_t id = 0;
+	return ++id;
+}
+
+inline Mech* GetMechById(uint32_t id, World& world)
+{
+	for (Mech& mech : world.mechs)
+	{
+		if (id == mech.id)
+			return &mech;
+	}
+	return nullptr;
+}
+
 inline BoundingBox WorldBox()
 {
 	static BoundingBox world;

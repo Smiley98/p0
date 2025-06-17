@@ -32,3 +32,10 @@ enum Team : uint32_t
 	TEAM_RED,
 	TEAM_BLUE
 };
+
+enum MissileState : uint32_t
+{
+	MISSILE_RISE,
+	MISSILE_SEEK,
+	MISSILE_DIVE
+};

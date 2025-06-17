@@ -68,7 +68,7 @@ void UpdateWorld(World& world)
         UpdateBuilding(building);
 
     for (Projectile& projectile : world.projectiles)
-        UpdateProjectile(projectile);
+        UpdateProjectile(projectile, world);
 
     for (Mech& mech : world.mechs)
     {

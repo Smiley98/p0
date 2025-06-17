@@ -11,12 +11,16 @@ struct Mech
     Team team = TEAM_NONE;
     bool destroy = false;
 
+    float health = 100.0f;
+
     Vector3 pos = Vector3Zeros;
     Vector3 vel = Vector3Zeros;
 
     float turn_speed = 100.0f * DEG2RAD;
     float move_speed = 100.0f;
     float drag = 0.05f; // 0.0 = full drag, 1.0 = no drag
+
+    float radius = 8.0f;
 
     Quaternion legs_rotation;
     Quaternion torso_rotation;

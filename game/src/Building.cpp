@@ -34,7 +34,7 @@ inline Mesh* BuildingMesh(BuildingType type)
     assert(mesh != nullptr, "Invalid building type");
     return mesh;
 }
-
+ 
 void CreateBuilding(Building* building, BuildingType type)
 {
     building->type = type;

@@ -238,5 +238,8 @@
     <ClInclude Include="src\Audio.h">
       <Filter>Assets\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="src\Steering.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

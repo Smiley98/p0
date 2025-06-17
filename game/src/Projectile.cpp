@@ -97,8 +97,6 @@ void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos)
 	p.mesh = g_meshes.prj_grenade;
 	p.material = LoadMaterialDefault();
 
-	p.missile.state = MISSILE_RISE;
-
 	CreateParticleTrail(&p);
 
 	world.projectiles.push_back(p);
@@ -120,6 +118,10 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	p.mesh = g_meshes.prj_missile;
 	p.material = LoadMaterialDefault();
 
+	p.missile.state = MISSILE_RISE;
+	p.missile.time = 0;
+	p.missile.target_id = 0;
+
 	CreateParticleTrail(&p);
 
 	world.projectiles.push_back(p);
@@ -132,6 +134,7 @@ void UpdateProjectile(Projectile& p, World& world)
 
 	float dt = GetFrameTime();
 	p.vel += GRAVITY * p.gravity_scale * dt;
+	p.vel += p.acc;
 	p.pos += p.vel * dt;
 
 	p.destroy |= !CheckCollisionBoxSphere(WorldBox(), p.pos, 1.0f);
@@ -178,6 +181,13 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 	ProjectileMissile& m = p.missile;
 	if (m.state = MISSILE_RISE)
 	{
+		m.time += GetFrameTime();
+		if (m.time >= 0.5f)
+		{
+			m.time = 0.0f;
+			m.state = MISSILE_SEEK;
+		}
+
 		float distance = FLT_MAX;
 		for (Mech& mech : world.mechs)
 		{
@@ -186,17 +196,32 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 				float target_distance = Vector3Distance(mech.pos, p.pos);
 				if (target_distance < distance)
 				{
+					distance = target_distance;
 					m.target_id = mech.id;
 				}
 			}
 		}
+
+		// TODO -- Make missile go from upwards to forwards from beginning to end of MISSILE_RISE state.
+		// Perhaps projectiles should store a rotation quaternion instead of just velocity
 	}
 	else if (m.state == MISSILE_SEEK)
 	{
+		m.time += GetFrameTime();
+		if (m.time >= 2.5f)
+		{
+			m.time = 0.0f;
+			m.state = MISSILE_DIVE;
+		}
+
 		Mech* mech = GetMechById(m.target_id, world);
 		if (mech != nullptr)
 		{
+			float target_distance = Vector3Distance(mech->pos, p.pos);
+			if (target_distance <= 25.0f)
+			{
 
+			}
 		}
 		else
 		{

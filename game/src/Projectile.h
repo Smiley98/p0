@@ -18,6 +18,8 @@ struct ProjectileMissile
 	uint32_t target_id;
 	float move_speed;
 	float turn_speed;
+
+	float time;
 };
 
 struct Projectile
@@ -27,6 +29,7 @@ struct Projectile
 
 	Vector3 pos = Vector3Zeros;
 	Vector3 vel = Vector3Zeros;
+	Vector3 acc = Vector3Zeros;
 
 	float radius = 0.0f;
 	float length = 0.0f;

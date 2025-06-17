@@ -126,6 +126,8 @@ void DrawMechDebug(const Mech& mech)
 
     for (int i = 0; i < 4; i++)
         DrawSphere(mech.gear_positions[i], 0.5f, DARKGREEN);
+
+    //DrawSphere(mech.pos, 25.0f, DARKBLUE);
 }
 
 void UpdateInputAim(Mech& mech)

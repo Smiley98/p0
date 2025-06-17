@@ -170,6 +170,7 @@
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Audio.h" />
     <ClInclude Include="src\SplashScreenScene.h" />
+    <ClInclude Include="src\Steering.h" />
     <ClInclude Include="src\TeamSelectScene.h" />
     <ClInclude Include="src\Textures.h" />
     <ClInclude Include="src\Types.h" />

@@ -20,6 +20,9 @@ struct ProjectileMissile
 	float turn_speed;
 
 	float time;
+
+	Vector3 launch_position;
+	Vector3 target_position;
 };
 
 struct Projectile

@@ -7,6 +7,7 @@
 #include "Mech.h"
 #include "World.h"
 #include "Audio.h"
+#include "Steering.h"
 
 void UpdateProjectileMissile(Projectile& p, World& world);
 
@@ -108,8 +109,8 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	Vector3 dir = Vector3RotateByQuaternion(Vector3UnitY, QuaternionMultiply(mech.torso_rotation, QuaternionFromEuler(80.0f * DEG2RAD, 0.0f, roll)));
 
 	Projectile p;
-	p.pos = base_pos + TorsoDirection(mech) * 10.0f;
-	p.vel = dir * 40.0f;
+	p.pos = base_pos;
+	p.vel = dir * 20.0f;
 	p.radius = 2.0f;
 	p.team = mech.team;
 	p.type = PROJECTILE_MISSILE;
@@ -121,6 +122,8 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	p.missile.state = MISSILE_RISE;
 	p.missile.time = 0;
 	p.missile.target_id = 0;
+	p.missile.launch_position = base_pos;
+	p.missile.target_position = base_pos + Vector3UnitZ * 25.0f + TorsoDirection(mech) * 25.0f;
 
 	CreateParticleTrail(&p);
 
@@ -134,7 +137,7 @@ void UpdateProjectile(Projectile& p, World& world)
 
 	float dt = GetFrameTime();
 	p.vel += GRAVITY * p.gravity_scale * dt;
-	p.vel += p.acc;
+	p.vel += p.acc * dt;
 	p.pos += p.vel * dt;
 
 	p.destroy |= !CheckCollisionBoxSphere(WorldBox(), p.pos, 1.0f);
@@ -179,34 +182,37 @@ void DrawProjectileDebug(const Projectile& p)
 void UpdateProjectileMissile(Projectile& p, World& world)
 {
 	ProjectileMissile& m = p.missile;
-	if (m.state = MISSILE_RISE)
+	if (m.state == MISSILE_RISE)
 	{
+		// TODO - See if there's a more reliable way to do this!?
+		p.acc = Seek(p.pos, m.target_position, p.vel, 50.0f);
+
 		m.time += GetFrameTime();
-		if (m.time >= 0.5f)
+		if (m.time >= 1.0f)
 		{
 			m.time = 0.0f;
 			m.state = MISSILE_SEEK;
-		}
 
-		float distance = FLT_MAX;
-		for (Mech& mech : world.mechs)
-		{
-			if (p.team != mech.team)
+			// Acquire target on-transition
+			float distance = FLT_MAX;
+			for (Mech& mech : world.mechs)
 			{
-				float target_distance = Vector3Distance(mech.pos, p.pos);
-				if (target_distance < distance)
+				if (p.team != mech.team)
 				{
-					distance = target_distance;
-					m.target_id = mech.id;
+					float target_distance = Vector3Distance(mech.pos, p.pos);
+					if (target_distance < distance)
+					{
+						distance = target_distance;
+						m.target_id = mech.id;
+					}
 				}
 			}
 		}
-
-		// TODO -- Make missile go from upwards to forwards from beginning to end of MISSILE_RISE state.
-		// Perhaps projectiles should store a rotation quaternion instead of just velocity
 	}
 	else if (m.state == MISSILE_SEEK)
 	{
+		p.destroy |= true;
+
 		m.time += GetFrameTime();
 		if (m.time >= 2.5f)
 		{
